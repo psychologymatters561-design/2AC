@@ -80,12 +80,15 @@ header.scrolled {
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
 }
 .logo-img {
-  height: 50px;
+  height: 80px;
   width: auto;
   object-fit: contain;
+  transition: transform 0.3s ease;
+}
+.logo-img:hover {
+  transform: scale(1.05);
 }
 .logo-text {
   font-family: 'Playfair Display', serif;
@@ -413,38 +416,77 @@ footer {
 .mobile-bottom-bar {
   display: none; 
   position: fixed; 
-  bottom: 20px; 
+  bottom: 24px; 
   left: 50%; 
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.95); 
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  background: rgba(15, 23, 42, 0.85); 
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1);
   z-index: 1000;
-  border-radius: 50px;
+  border-radius: 100px;
   overflow: hidden;
-  width: 90%;
-  max-width: 400px;
-  border: 1px solid rgba(255,255,255,0.2);
+  width: 92%;
+  max-width: 420px;
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 6px;
+  gap: 8px;
 }
 .mobile-bottom-bar a {
-  flex: 1; text-align: center; padding: 1rem 0.5rem; font-weight: 600;
-  display: flex; justify-content: center; align-items: center; gap: 0.5rem;
-  font-size: 0.875rem; text-transform: uppercase; letter-spacing: 1px;
-  transition: all 0.3s ease;
+  flex: 1; 
+  text-align: center; 
+  padding: 14px 10px; 
+  font-weight: 600;
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  gap: 8px;
+  font-size: 0.9rem; 
+  text-transform: uppercase; 
+  letter-spacing: 1px;
+  border-radius: 100px;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
 }
-.mobile-call { background: var(--primary); color: var(--surface); }
-.mobile-call:hover { background: #1e293b; }
-.mobile-wa { background: #25D366; color: var(--surface); }
-.mobile-wa:hover { background: #20b858; }
+.mobile-call { 
+  background: var(--surface); 
+  color: var(--primary); 
+}
+.mobile-call:hover { 
+  background: #f1f5f9; 
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+}
+.mobile-wa { 
+  background: linear-gradient(135deg, #25D366, #128C7E); 
+  color: var(--surface); 
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+.mobile-wa:hover { 
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+}
+.mobile-wa::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-25deg);
+  animation: shine 3s infinite;
+}
+@keyframes shine {
+  0% { left: -100%; }
+  20% { left: 200%; }
+  100% { left: 200%; }
+}
 
 .pulse-icon {
-  animation: pulse 2s infinite;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
 }
 
 /* Animations */
@@ -476,11 +518,13 @@ footer {
   
   <header>
     <div class="logo-container">
-      <img src="logo.png" alt="Air Control Logo" class="logo-img" onerror="this.style.display='none'">
-      <a href="index.html" class="logo-text">Air <span>Control</span></a>
+      <a href="index.html">
+        <img src="logo.png" alt="Air Control Logo" class="logo-img" onerror="this.onerror=null; this.src='https://placehold.co/200x80/0F172A/FFFFFF?text=Air+Control&font=Playfair+Display';">
+      </a>
     </div>
     <nav class="nav-links">
       <a href="index.html">Home</a>
+      <a href="why-us.html">Why Us</a>
       <div class="dropdown">
         <a href="#">Services</a>
         <div class="dropdown-content">
@@ -506,11 +550,11 @@ footer {
   </header>
   <div class="mobile-bottom-bar">
     <a href="tel:+919312264832" class="mobile-call">
-      <svg class="pulse-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+      <svg class="pulse-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
       Call Now
     </a>
     <a href="https://wa.me/919312264832" class="mobile-wa">
-      <svg class="pulse-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+      <svg class="pulse-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
       WhatsApp
     </a>
   </div>
@@ -547,6 +591,12 @@ footer {
           <h3>Trusted Heritage</h3>
           <p>Serving the NCR region since 1987, we have built a reputation for uncompromising quality and integrity.</p>
         </div>
+      </div>
+    </section>
+    <section style="background-color: var(--primary); color: var(--surface); padding: 4rem 5%; text-align: center;">
+      <div class="reveal">
+        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent);">Your Local HVAC Experts</h3>
+        <p style="max-width: 800px; margin: 0 auto; color: #CBD5E1; line-height: 1.8;">Looking for an <strong>HVAC contractor in Noida</strong> or the <strong>best HVAC contractor in Noida</strong>? We are your local experts for <strong>AC repair in Noida</strong>, <strong>AC service in Noida</strong>, and the <strong>best AC repair service in Noida</strong>. We also provide <strong>commercial HVAC repair near me</strong> and <strong>residential HVAC near me</strong> to ensure your environment remains perfectly climate-controlled.</p>
       </div>
     </section>
     <section style="background-color: var(--bg-light);">
@@ -593,7 +643,7 @@ footer {
     <div class="footer-grid">
       <div class="footer-col">
         <h3 style="font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; color: var(--accent);">Air Control</h3>
-        <p>Delhi NCR's premier institutional and residential air conditioning experts since 1987.</p>
+        <p>Delhi NCR's top-rated AC repair, professional AC installation, and reliable AC servicing experts since 1987.</p>
         <br>
         <p>📍 Sant Nagar, East of Kailash, New Delhi 110065</p>
         <p>📞 <a href="tel:+919312264832" style="color: var(--surface);">+91 93122 64832</a></p>
@@ -625,6 +675,10 @@ footer {
           <li><a href="blog.html">Industry Insights</a></li>
         </ul>
       </div>
+    </div>
+    <div class="footer-seo" style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; color: #475569; line-height: 1.8; text-align: justify;">
+      <p style="margin-bottom: 1rem;"><strong style="color: #64748B;">Local Service Areas & Searches:</strong> HVAC near me, heating and cooling near me, AC repair near me, furnace repair near me, air conditioning near me, HVAC installation near me, HVAC replacement near me, heating and air conditioning repair near me, HVAC companies near me, HVAC repair near me, duct cleaning near me, air duct cleaning near me, HVAC service near me, AC service near me, HVAC company near me, HVAC contractors near me, heating and cooling companies near me, air conditioning service near me, air conditioning services near me, HVAC services near me, air conditioning repair near me, best HVAC companies near me, commercial HVAC companies near me, air ducts cleaning near me, air condition service near me, emergency AC repair near me, heating and cooling service near me, home AC repair near me, local HVAC companies, commercial HVAC repair near me, local HVAC repair, best HVAC repair near me, residential HVAC near me, best heating and cooling companies near me, heat and air conditioning service near me, AC vent cleaning near me, ductless heating and cooling near me, best AC repair service in Gurgaon, AC repair Delhi, AC installation Noida, AC servicing Faridabad.</p>
+      <p><strong style="color: #64748B;">Comprehensive HVAC Solutions:</strong> HVAC, air conditioning repair, AC repair, furnace repair, HVAC installation, HVAC replacement, air duct cleaning, HVAC system, air conditioning service, HVAC maintenance, commercial HVAC, heating repair, duct cleaning, heating and cooling companies, residential HVAC, AC servicing, air conditioning servicing, ductless heating and cooling, HVAC duct cleaning, central air installation, HVAC air purifier, whole house air purifier HVAC, water heater repair, air conditioning repair services, air duct cleaning services, air conditioning services, AC services, heat pump repair, air condition services, air conditioning service repair, duct cleaning services, furnace repair service, duct cleaning service, emergency furnace repair, AC vent cleaning, heating and air conditioning service, heating and cooling repair, heating and cooling services, commercial HVAC repair, HVAC repair service, air conditioning duct cleaning, best air purifier for HVAC system, split AC repair, AC installation services, air conditioning maintenance, affordable HVAC services, HVAC maintenance plan, AC tune-up near me, furnace maintenance service, air conditioning installation, HVAC system upgrade, HVAC system inspection, ductwork installation, indoor air quality solutions, HVAC energy efficiency upgrades, ventilation system maintenance, smart thermostat installation, boiler repair services, boiler replacement, ductless mini-split installation, smart thermostat setup, air handler repair, radiant heating system installation, ventilation system repair, thermostat replacement, energy-efficient HVAC installation.</p>
     </div>
     <div class="footer-bottom">
       <p>&copy; 2025 Air Control. Excellence in Climate Management. All rights reserved.</p>

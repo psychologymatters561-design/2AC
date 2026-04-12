@@ -63,12 +63,15 @@ header.scrolled {
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
 }
 .logo-img {
-  height: 50px;
+  height: 80px;
   width: auto;
   object-fit: contain;
+  transition: transform 0.3s ease;
+}
+.logo-img:hover {
+  transform: scale(1.05);
 }
 .logo-text {
   font-family: 'Playfair Display', serif;
@@ -396,38 +399,77 @@ footer {
 .mobile-bottom-bar {
   display: none; 
   position: fixed; 
-  bottom: 20px; 
+  bottom: 24px; 
   left: 50%; 
   transform: translateX(-50%);
-  background: rgba(255, 255, 255, 0.95); 
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  background: rgba(15, 23, 42, 0.85); 
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1);
   z-index: 1000;
-  border-radius: 50px;
+  border-radius: 100px;
   overflow: hidden;
-  width: 90%;
-  max-width: 400px;
-  border: 1px solid rgba(255,255,255,0.2);
+  width: 92%;
+  max-width: 420px;
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 6px;
+  gap: 8px;
 }
 .mobile-bottom-bar a {
-  flex: 1; text-align: center; padding: 1rem 0.5rem; font-weight: 600;
-  display: flex; justify-content: center; align-items: center; gap: 0.5rem;
-  font-size: 0.875rem; text-transform: uppercase; letter-spacing: 1px;
-  transition: all 0.3s ease;
+  flex: 1; 
+  text-align: center; 
+  padding: 14px 10px; 
+  font-weight: 600;
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  gap: 8px;
+  font-size: 0.9rem; 
+  text-transform: uppercase; 
+  letter-spacing: 1px;
+  border-radius: 100px;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+  overflow: hidden;
 }
-.mobile-call { background: var(--primary); color: var(--surface); }
-.mobile-call:hover { background: #1e293b; }
-.mobile-wa { background: #25D366; color: var(--surface); }
-.mobile-wa:hover { background: #20b858; }
+.mobile-call { 
+  background: var(--surface); 
+  color: var(--primary); 
+}
+.mobile-call:hover { 
+  background: #f1f5f9; 
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+}
+.mobile-wa { 
+  background: linear-gradient(135deg, #25D366, #128C7E); 
+  color: var(--surface); 
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+.mobile-wa:hover { 
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+}
+.mobile-wa::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-25deg);
+  animation: shine 3s infinite;
+}
+@keyframes shine {
+  0% { left: -100%; }
+  20% { left: 200%; }
+  100% { left: 200%; }
+}
 
 .pulse-icon {
-  animation: pulse 2s infinite;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 @keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.8; }
 }
 
 /* Animations */
@@ -491,11 +533,13 @@ function getHeader(pathPrefix = '') {
   return `
   <header>
     <div class="logo-container">
-      <img src="${pathPrefix}logo.png" alt="Air Control Logo" class="logo-img" onerror="this.style.display='none'">
-      <a href="${pathPrefix}index.html" class="logo-text">Air <span>Control</span></a>
+      <a href="${pathPrefix}index.html">
+        <img src="${pathPrefix}logo.png" alt="Air Control Logo" class="logo-img" onerror="this.onerror=null; this.src='https://placehold.co/200x80/0F172A/FFFFFF?text=Air+Control&font=Playfair+Display';">
+      </a>
     </div>
     <nav class="nav-links">
       <a href="${pathPrefix}index.html">Home</a>
+      <a href="${pathPrefix}why-us.html">Why Us</a>
       <div class="dropdown">
         <a href="#">Services</a>
         <div class="dropdown-content">
@@ -521,11 +565,11 @@ function getHeader(pathPrefix = '') {
   </header>
   <div class="mobile-bottom-bar">
     <a href="tel:+919312264832" class="mobile-call">
-      <svg class="pulse-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+      <svg class="pulse-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
       Call Now
     </a>
     <a href="https://wa.me/919312264832" class="mobile-wa">
-      <svg class="pulse-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+      <svg class="pulse-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
       WhatsApp
     </a>
   </div>
@@ -538,7 +582,7 @@ function getFooter(pathPrefix = '') {
     <div class="footer-grid">
       <div class="footer-col">
         <h3 style="font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; color: var(--accent);">Air Control</h3>
-        <p>Delhi NCR's premier institutional and residential air conditioning experts since 1987.</p>
+        <p>Delhi NCR's top-rated AC repair, professional AC installation, and reliable AC servicing experts since 1987.</p>
         <br>
         <p>📍 Sant Nagar, East of Kailash, New Delhi 110065</p>
         <p>📞 <a href="tel:+919312264832" style="color: var(--surface);">+91 93122 64832</a></p>
@@ -570,6 +614,10 @@ function getFooter(pathPrefix = '') {
           <li><a href="${pathPrefix}blog.html">Industry Insights</a></li>
         </ul>
       </div>
+    </div>
+    <div class="footer-seo" style="margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.75rem; color: #475569; line-height: 1.8; text-align: justify;">
+      <p style="margin-bottom: 1rem;"><strong style="color: #64748B;">Local Service Areas & Searches:</strong> HVAC near me, heating and cooling near me, AC repair near me, furnace repair near me, air conditioning near me, HVAC installation near me, HVAC replacement near me, heating and air conditioning repair near me, HVAC companies near me, HVAC repair near me, duct cleaning near me, air duct cleaning near me, HVAC service near me, AC service near me, HVAC company near me, HVAC contractors near me, heating and cooling companies near me, air conditioning service near me, air conditioning services near me, HVAC services near me, air conditioning repair near me, best HVAC companies near me, commercial HVAC companies near me, air ducts cleaning near me, air condition service near me, emergency AC repair near me, heating and cooling service near me, home AC repair near me, local HVAC companies, commercial HVAC repair near me, local HVAC repair, best HVAC repair near me, residential HVAC near me, best heating and cooling companies near me, heat and air conditioning service near me, AC vent cleaning near me, ductless heating and cooling near me, best AC repair service in Gurgaon, AC repair Delhi, AC installation Noida, AC servicing Faridabad.</p>
+      <p><strong style="color: #64748B;">Comprehensive HVAC Solutions:</strong> HVAC, air conditioning repair, AC repair, furnace repair, HVAC installation, HVAC replacement, air duct cleaning, HVAC system, air conditioning service, HVAC maintenance, commercial HVAC, heating repair, duct cleaning, heating and cooling companies, residential HVAC, AC servicing, air conditioning servicing, ductless heating and cooling, HVAC duct cleaning, central air installation, HVAC air purifier, whole house air purifier HVAC, water heater repair, air conditioning repair services, air duct cleaning services, air conditioning services, AC services, heat pump repair, air condition services, air conditioning service repair, duct cleaning services, furnace repair service, duct cleaning service, emergency furnace repair, AC vent cleaning, heating and air conditioning service, heating and cooling repair, heating and cooling services, commercial HVAC repair, HVAC repair service, air conditioning duct cleaning, best air purifier for HVAC system, split AC repair, AC installation services, air conditioning maintenance, affordable HVAC services, HVAC maintenance plan, AC tune-up near me, furnace maintenance service, air conditioning installation, HVAC system upgrade, HVAC system inspection, ductwork installation, indoor air quality solutions, HVAC energy efficiency upgrades, ventilation system maintenance, smart thermostat installation, boiler repair services, boiler replacement, ductless mini-split installation, smart thermostat setup, air handler repair, radiant heating system installation, ventilation system repair, thermostat replacement, energy-efficient HVAC installation.</p>
     </div>
     <div class="footer-bottom">
       <p>&copy; 2025 Air Control. Excellence in Climate Management. All rights reserved.</p>
@@ -679,8 +727,8 @@ generatePage(
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <span class="hero-subtitle reveal">Est. 1987 • 38 Years of Excellence</span>
-      <h1 class="reveal delay-1">Where Air Conditioning Is<br>Engineered,<br>Not Improvised.</h1>
-      <p class="reveal delay-2">Top-rated AC repair, professional AC installation, and reliable AC servicing in Delhi NCR. We provide expert cooling solutions, deep cleaning, and comprehensive Annual Maintenance Contracts (AMC) for homes and businesses.</p>
+      <h1 class="reveal delay-1">Where Air Conditioning Is Engineered, Not Improvised.</h1>
+      <p class="reveal delay-2">Expert AC repair, professional air conditioning installation, and reliable AC servicing in Delhi NCR. We offer top-rated cooling solutions, split and window AC maintenance, central air conditioning repair, and comprehensive AMC services for residential and commercial spaces.</p>
       <div class="cta-group reveal delay-3">
         <a href="#contact" class="btn-premium">Schedule Consultation</a>
         <a href="tel:+919312264832" class="btn-premium btn-outline">Call +91 93122 64832</a>
@@ -780,6 +828,32 @@ generatePage(
       </div>
     </div>
   </section>
+
+  <section style="background-color: var(--surface);">
+    <div class="section-header reveal">
+      <span class="section-subtitle">Diagnostic Expertise</span>
+      <h2 class="section-title">Common HVAC Problems We Solve</h2>
+    </div>
+    <div class="grid">
+      <div class="premium-card reveal">
+        <h3 style="font-size: 1.25rem;">Cooling & Airflow Issues</h3>
+        <p>Experiencing an <strong>AC not blowing cold air</strong>, <strong>AC not cooling</strong> properly, or <strong>weak airflow AC</strong>? We diagnose frozen evaporator coils, signs of a refrigerant leak, and resolve issues where your AC compressor runs continuously.</p>
+      </div>
+      <div class="premium-card reveal delay-1">
+        <h3 style="font-size: 1.25rem;">Leaks, Noises & Odours</h3>
+        <p>Don't ignore an <strong>AC leaking water</strong>, <strong>hissing sounds AC</strong>, <strong>AC making banging noise</strong>, <strong>AC making buzzing noise</strong>, or an <strong>AC unit emitting unusual odours</strong>. We fix AC water leakage problems fast.</p>
+      </div>
+      <div class="premium-card reveal delay-2">
+        <h3 style="font-size: 1.25rem;">Power & Thermostat Failures</h3>
+        <p>If your <strong>AC not turning on</strong>, you're asking "<strong>why is my AC not working?</strong>", or dealing with <strong>AC remote not working</strong>, <strong>AC thermostat issues</strong>, or frequent cycling AC, our technicians provide immediate air conditioner fixes.</p>
+      </div>
+      <div class="premium-card reveal delay-3">
+        <h3 style="font-size: 1.25rem;">Emergency Heating & AC</h3>
+        <p>We offer <strong>emergency AC repair</strong>, <strong>24 hour AC repair</strong>, <strong>24/7 AC repair</strong>, <strong>emergency HVAC repair</strong>, <strong>same-day furnace repair</strong>, <strong>after-hours HVAC repair</strong>, <strong>weekend furnace repair</strong>, and <strong>late-night emergency AC service</strong> with a rapid response HVAC technician.</p>
+      </div>
+    </div>
+  </section>
+
   <section style="background-color: var(--bg-light);">
     ${getForm()}
   </section>
@@ -822,6 +896,28 @@ generatePage(
       </div>
     </div>
   </section>
+
+  <section style="background-color: var(--surface);">
+    <div class="section-header reveal">
+      <span class="section-subtitle">Beyond Basic Maintenance</span>
+      <h2 class="section-title">Indoor Air Quality & Duct Cleaning</h2>
+    </div>
+    <div class="grid">
+      <div class="premium-card reveal">
+        <h3 style="font-size: 1.25rem;">Air Duct Cleaning Services</h3>
+        <p>Our comprehensive <strong>air duct cleaning</strong> and <strong>HVAC duct cleaning</strong> services remove allergens and dust. We offer <strong>air ducts cleaning near me</strong> and <strong>AC vent cleaning</strong> to ensure pristine indoor air quality solutions.</p>
+      </div>
+      <div class="premium-card reveal delay-1">
+        <h3 style="font-size: 1.25rem;">HVAC Air Purifiers</h3>
+        <p>We install the <strong>best air purifier for HVAC system</strong> and <strong>whole house air purifier HVAC</strong> setups. Breathe easier with our advanced ventilation system maintenance and repair.</p>
+      </div>
+      <div class="premium-card reveal delay-2">
+        <h3 style="font-size: 1.25rem;">AC Tune-Up & Maintenance</h3>
+        <p>Looking for an <strong>AC tune-up near me</strong>? Our <strong>air conditioning maintenance</strong> includes <strong>AC filter cleaning</strong>, teaching you <strong>how to clean HVAC coils</strong>, and providing <strong>DIY HVAC maintenance tips</strong> to prevent a spike in electricity bills AC.</p>
+      </div>
+    </div>
+  </section>
+
   <section style="background-color: var(--bg-light);">
     ${getForm()}
   </section>
@@ -864,6 +960,28 @@ generatePage(
       </div>
     </div>
   </section>
+
+  <section style="background-color: var(--surface);">
+    <div class="section-header reveal">
+      <span class="section-subtitle">Modern Solutions</span>
+      <h2 class="section-title">HVAC Installation & Replacement</h2>
+    </div>
+    <div class="grid">
+      <div class="premium-card reveal">
+        <h3 style="font-size: 1.25rem;">System Upgrades & Replacement</h3>
+        <p>Whether you need an <strong>HVAC replacement</strong>, <strong>boiler replacement</strong>, or <strong>thermostat replacement</strong>, we provide transparent <strong>AC replacement cost</strong> and <strong>new AC unit installation cost</strong> estimates.</p>
+      </div>
+      <div class="premium-card reveal delay-1">
+        <h3 style="font-size: 1.25rem;">Ductless & Smart Systems</h3>
+        <p>We specialize in <strong>ductless heating and cooling</strong>, <strong>ductless mini-split installation</strong>, <strong>smart thermostat installation</strong>, and <strong>smart thermostat setup</strong> for maximum energy efficiency.</p>
+      </div>
+      <div class="premium-card reveal delay-2">
+        <h3 style="font-size: 1.25rem;">Heating & Cooling Companies</h3>
+        <p>As one of the leading <strong>heating and cooling companies</strong>, we handle <strong>central air installation</strong>, <strong>furnace installation cost</strong> assessments, <strong>radiant heating system installation</strong>, and <strong>ductwork installation</strong>.</p>
+      </div>
+    </div>
+  </section>
+
   <section style="background-color: var(--bg-light);">
     ${getForm()}
   </section>
@@ -912,6 +1030,106 @@ generatePage(
   `
 );
 
+// --- PAGE 6: Why Us ---
+generatePage(
+  'why-us.html',
+  'Why Choose Air Control | The AC Decision That Protects Everything',
+  'Why professional engineering matters in every AC installation. Discover the Air Control standard of safety, precision welding, and 38 years of trust.',
+  'Why Professional Engineering Matters',
+  'Why Air Control, AC safety, professional AC installation, AC engineering, reliable AC service Delhi',
+  `
+  <div class="breadcrumbs">
+    <a href="index.html">Home</a> &gt; Why Us
+  </div>
+  <section class="hero" style="min-height: 60vh; padding-top: 12rem;">
+    <div class="hero-bg" style="background-image: url('https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?q=80&w=2070');"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <span class="hero-subtitle reveal">The Honest Comparison</span>
+      <h1 class="reveal delay-1">Why Professional Engineering<br>Matters in Every Installation</h1>
+      <p class="reveal delay-2">The AC decision that protects everything you've built. Discover the Air Control standard of safety, precision, and 38 years of trust.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-header reveal">
+      <span class="section-subtitle">Safety First</span>
+      <h2 class="section-title">Safety Is Not a Feature —<br>It Is Our Foundation</h2>
+      <p style="max-width: 600px; margin: 0 auto; color: var(--text-muted);">Why air conditioning must be treated as a critical engineering system, not a commodity service call.</p>
+    </div>
+    <div class="grid">
+      <div class="premium-card reveal">
+        <h3 style="font-size: 1.25rem;">Refrigerant Choice Determines Safety</h3>
+        <p>The refrigerant inside your AC system is either your greatest protection or your silent threat. Flammable R-32 in untrained hands creates hazards that remain invisible until an incident occurs. We use only certified, non-hazardous refrigerants — no exceptions, no commercial pressure.</p>
+      </div>
+      <div class="premium-card reveal delay-1">
+        <h3 style="font-size: 1.25rem;">Precision Welding Is Non-Negotiable</h3>
+        <p>Every copper pipe joint we create is welded to structural engineering standards — tested, verified, and guaranteed. Improper welding creates micro-leaks that silently degrade your system over months, eventually creating both safety hazards and very expensive failures.</p>
+      </div>
+      <div class="premium-card reveal delay-2">
+        <h3 style="font-size: 1.25rem;">Systems, Not Appliances</h3>
+        <p>An AC installation touches your building's structure, electrical infrastructure, and indoor air quality simultaneously. We design holistically — every component from insulation to fittings is selected for compatibility, safety, and 20-year operational performance.</p>
+      </div>
+      <div class="premium-card reveal delay-3">
+        <h3 style="font-size: 1.25rem;">Long-Term Value Always Prevails</h3>
+        <p>"Cheap today" becomes catastrophically expensive tomorrow. Our clients who switched to Air Control after bad experiences consistently tell us the same thing: <em>"The extra investment paid for itself within the first year of zero breakdowns."</em></p>
+      </div>
+    </div>
+  </section>
+
+  <section style="background-color: var(--primary); color: var(--surface); padding: 6rem 5%;">
+    <div class="section-header reveal">
+      <span class="section-subtitle" style="color: var(--accent);">Our Guarantees</span>
+      <h2 class="section-title" style="color: var(--surface);">What We Guarantee<br>on Every Engagement</h2>
+    </div>
+    <div class="grid">
+      <div class="premium-card reveal" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+        <h3 style="color: var(--surface);">Zero Safety Compromise</h3>
+        <p style="color: #CBD5E1;">We have never compromised on safety in 38 years. Not once. Not for budget. Not for deadlines.</p>
+      </div>
+      <div class="premium-card reveal delay-1" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+        <h3 style="color: var(--surface);">2-Hour Emergency Response</h3>
+        <p style="color: #CBD5E1;">When critical systems fail, every hour costs you. We guarantee 2-hour response across Delhi NCR.</p>
+      </div>
+      <div class="premium-card reveal delay-2" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+        <h3 style="color: var(--surface);">Full Accountability</h3>
+        <p style="color: #CBD5E1;">Every project comes with complete documentation, warranty, and an ongoing accountability structure.</p>
+      </div>
+      <div class="premium-card reveal delay-3" style="background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+        <h3 style="color: var(--surface);">Lifetime Partnership</h3>
+        <p style="color: #CBD5E1;">We build relationships, not transactions. Our AMC clients average 15+ years of continuous partnership.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-header reveal">
+      <span class="section-subtitle">Our Legacy</span>
+      <h2 class="section-title">38 Years of Building<br>Unbreakable Trust</h2>
+      <p style="max-width: 600px; margin: 0 auto; color: var(--text-muted);">Our reputation was built long before shortcuts became common.</p>
+    </div>
+    <div class="grid">
+      <div class="premium-card reveal">
+        <h3 style="font-size: 1.25rem;">Consultant-First AC Solutions</h3>
+        <p>We don't just install; we consult. From residential air conditioning to commercial & industrial AC systems, we provide expert guidance on split, VRF, VRV & chiller installations, system audits, upgrades, and safety optimization.</p>
+      </div>
+      <div class="premium-card reveal delay-1">
+        <h3 style="font-size: 1.25rem;">Trusted by Institutions That Cannot Afford Risk</h3>
+        <p>Our clients include embassies & consulates, logistics & warehousing, high-value retail & jewellers, medical facilities, IT parks & data centers, and corporate offices & premium residences.</p>
+      </div>
+      <div class="premium-card reveal delay-2">
+        <h3 style="font-size: 1.25rem;">AC Services for All Industries</h3>
+        <p>We provide specialized AC services for industrial systems, commercial setups, hospital air conditioning, hotel cooling, and data center environments across Delhi NCR.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="background-color: var(--bg-light);">
+    ${getForm()}
+  </section>
+  `
+);
+
 // --- LOCATION PAGES ---
 const locations = ['Delhi', 'Gurgaon', 'Noida', 'Faridabad', 'Ghaziabad'];
 locations.forEach(loc => {
@@ -951,6 +1169,12 @@ locations.forEach(loc => {
           <h3>Trusted Heritage</h3>
           <p>Serving the NCR region since 1987, we have built a reputation for uncompromising quality and integrity.</p>
         </div>
+      </div>
+    </section>
+    <section style="background-color: var(--primary); color: var(--surface); padding: 4rem 5%; text-align: center;">
+      <div class="reveal">
+        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--accent);">Your Local HVAC Experts</h3>
+        <p style="max-width: 800px; margin: 0 auto; color: #CBD5E1; line-height: 1.8;">Looking for an <strong>HVAC contractor in ${loc}</strong> or the <strong>best HVAC contractor in ${loc}</strong>? We are your local experts for <strong>AC repair in ${loc}</strong>, <strong>AC service in ${loc}</strong>, and the <strong>best AC repair service in ${loc}</strong>. We also provide <strong>commercial HVAC repair near me</strong> and <strong>residential HVAC near me</strong> to ensure your environment remains perfectly climate-controlled.</p>
       </div>
     </section>
     <section style="background-color: var(--bg-light);">
@@ -1000,6 +1224,24 @@ generatePage(
         <p>How often should institutional and residential systems undergo deep cleaning and maintenance?</p>
         <a href="blog/how-often-ac-service.html" class="card-link">Read Article</a>
       </div>
+      <div class="premium-card reveal">
+        <span class="section-subtitle" style="margin-bottom: 0.5rem;">Market Guide</span>
+        <h3 style="margin-bottom: 1rem;">Cheapest AC Market in Delhi</h3>
+        <p>Explore our guide to the used AC market Delhi, old AC market Delhi, second hand AC Delhi, and Delhi AC wholesale market.</p>
+        <a href="blog/ac-market-guide-delhi.html" class="card-link">Read Article</a>
+      </div>
+      <div class="premium-card reveal delay-1">
+        <span class="section-subtitle" style="margin-bottom: 0.5rem;">Pricing</span>
+        <h3 style="margin-bottom: 1rem;">AC Gas Refill Cost in India 2025</h3>
+        <p>A detailed breakdown of the AC gas refill cost in India 2025, signs of a refrigerant leak, and why professional AC servicing matters.</p>
+        <a href="blog/ac-gas-refill-cost-2025.html" class="card-link">Read Article</a>
+      </div>
+      <div class="premium-card reveal delay-2">
+        <span class="section-subtitle" style="margin-bottom: 0.5rem;">Installation</span>
+        <h3 style="margin-bottom: 1rem;">HVAC for Small Apartments</h3>
+        <p>Expert advice on how to choose the best HVAC system for a small apartment, including ductless mini-split installation.</p>
+        <a href="blog/choose-hvac-small-apartment.html" class="card-link">Read Article</a>
+      </div>
     </div>
   </section>
   `
@@ -1010,7 +1252,11 @@ const blogPosts = [
   { slug: 'ac-gas-filling-cost-delhi', title: 'AC Gas Filling Cost in Delhi', desc: 'Understand the costs involved in AC gas filling and why professional service is crucial.' },
   { slug: 'how-often-ac-service', title: 'How Often Should You Service Your AC?', desc: 'Learn about the recommended frequency for AC servicing to maintain optimal performance.' },
   { slug: 'best-ac-for-home', title: 'Best AC for Home: A Buying Guide', desc: 'A comprehensive guide to choosing the right air conditioning system for your residential needs.' },
-  { slug: 'ac-amc-worth-it', title: 'Is an AC AMC Worth It?', desc: 'Analyze the cost-benefits of Annual Maintenance Contracts for commercial and residential setups.' }
+  { slug: 'ac-amc-worth-it', title: 'Is an AC AMC Worth It?', desc: 'Analyze the cost-benefits of Annual Maintenance Contracts for commercial and residential setups.' },
+  { slug: 'ac-market-guide-delhi', title: 'Cheapest AC Market in Delhi: Used & Wholesale Guide', desc: 'Looking for the cheapest AC market Delhi? Explore our guide to the used AC market Delhi, old AC market Delhi, second hand AC Delhi, and Delhi AC wholesale market.' },
+  { slug: 'ac-gas-refill-cost-2025', title: 'AC Gas Refill Cost in India 2025', desc: 'A detailed breakdown of the AC gas refill cost in India 2025, signs of a refrigerant leak, and why professional AC servicing matters.' },
+  { slug: 'choose-hvac-small-apartment', title: 'How to Choose the Best HVAC System for a Small Apartment', desc: 'Expert advice on how to choose the best HVAC system for a small apartment, including ductless mini-split installation and energy-efficient HVAC installation.' },
+  { slug: 'furnace-repair-signs', title: 'Signs Your Furnace Needs Repair', desc: "Don't wait for a breakdown. Learn the signs your furnace needs repair, common HVAC problems, and when to call for emergency furnace repair." }
 ];
 
 blogPosts.forEach(post => {
