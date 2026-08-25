@@ -1,0 +1,99 @@
+name: Build generated pages
+
+# The service and location pages are generated from build.py plus the
+# content_*.py modules. Regenerating them here keeps the committed HTML in
+# step with the sources without anyone having to run the build by hand.
+
+on:
+  push:
+    branches:
+      - "claude/**"
+      - main
+    paths:
+      - "build.py"
+      - "build_all.py"
+      - "content_*.py"
+      - "index.html"
+      - "normalize_pages.py"
+      - ".github/workflows/build-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Generate pages
+        run: python3 build_all.py
+
+      - name: Normalise hand-written pages
+        run: python3 normalize_pages.py
+
+      - name: Verify output
+        run: |
+          python3 - <<'EOF'
+          import glob, json, re, sys
+          from html.parser import HTMLParser
+
+          VOID = {'meta','link','img','br','hr','input','source','area',
+                  'base','col','embed','param','track','wbr'}
+
+          class P(HTMLParser):
+              def __init__(self):
+                  super().__init__(); self.stack = []; self.bad = False
+              def handle_starttag(self, t, a):
+                  if t not in VOID: self.stack.append(t)
+              def handle_endtag(self, t):
+                  if t in VOID: return
+                  if not self.stack: self.bad = True; return
+                  if self.stack[-1] == t: self.stack.pop()
+                  elif t in self.stack:
+                      while self.stack and self.stack[-1] != t: self.stack.pop()
+                      if self.stack: self.stack.pop()
+                  else: self.bad = True
+
+          fail = []
+          for f in sorted(glob.glob('ac-*.html')):
+              h = open(f, encoding='utf-8').read()
+              p = P(); p.feed(h)
+              if p.bad or p.stack: fail.append(f + ': html nesting')
+              if h.count('<h1') != 1: fail.append(f + ': h1 count')
+              for m in re.finditer(r'<script[^>]*ld\+json[^>]*>(.*?)</script>', h, re.S):
+                  try: json.loads(m.group(1))
+                  except Exception: fail.append(f + ': bad json-ld')
+              for m in re.finditer(r'<style[^>]*>(.*?)</style>', h, re.S):
+                  if m.group(1).count('{') != m.group(1).count('}'):
+                      fail.append(f + ': css braces')
+              body = re.sub(r'<script.*?</script>|<style.*?</style>', '',
+                            h[h.find('<body'):], flags=re.S)
+              if re.search(r'\bHVAC\b', re.sub(r'<[^>]+>', ' ', body), re.I):
+                  fail.append(f + ': visible HVAC')
+
+          if fail:
+              print('FAILED:'); [print(' ', x) for x in fail]; sys.exit(1)
+          print('all generated pages passed verification')
+          EOF
+
+      - name: Commit regenerated pages
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- '*.html'; then
+            echo "no changes to commit"
+          else
+            git add '*.html'
+            git commit -m "Regenerate and normalise pages [skip ci]"
+            git push
+          fi
