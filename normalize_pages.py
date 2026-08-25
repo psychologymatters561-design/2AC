@@ -44,6 +44,12 @@ def normalise(path):
     original = html
     prefix = "../" * path.count("/")
 
+    # Some pages fell back to a third-party placeholder service. That is an
+    # external request on every page view and renders generic text instead of
+    # the brand mark, so point those at the local svg instead.
+    html = re.sub(r"this\.src='https://placehold\.co/[^']*'",
+                  f"this.src='{prefix}logo.svg'", html)
+
     # logo fallback on every logo.png <img>
     def add_fallback(m):
         tag = m.group(0)
@@ -88,7 +94,8 @@ def normalise(path):
 
 if __name__ == "__main__":
     pages = sorted(set(glob.glob("*.html")) | set(glob.glob("blog/*.html")))
-    changed = [p for p in pages if p not in GENERATED and normalise(p)]
-    print(f"normalised {len(changed)} of {len(pages) - len(GENERATED)} hand-written pages")
+    handwritten = [p for p in pages if p not in GENERATED]
+    changed = [p for p in handwritten if normalise(p)]
+    print(f"normalised {len(changed)} of {len(handwritten)} hand-written pages")
     for p in changed:
         print("  ", p)
