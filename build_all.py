@@ -1,20 +1,26 @@
 #!/usr/bin/env python3
 """Regenerate every generated page. Run: python3 build_all.py"""
 from build import write
-import content_services as S
-import content_services2 as S2
-import content_locations as L
+from content_repair import ac_repair
+from content_servicing import ac_servicing
+from content_installation import ac_installation
+from content_amc import ac_amc
+from content_delhi import delhi
+from content_gurgaon import gurgaon
+from content_noida import noida
+from content_faridabad import faridabad
+from content_ghaziabad import ghaziabad
 
 JOBS = [
-    ("ac-repair.html",            S.ac_repair),
-    ("ac-servicing.html",         S.ac_servicing),
-    ("ac-installation.html",      S2.ac_installation),
-    ("ac-amc.html",               S2.ac_amc),
-    ("ac-service-delhi.html",     L.delhi),
-    ("ac-service-gurgaon.html",   L.gurgaon),
-    ("ac-service-noida.html",     L.noida),
-    ("ac-service-faridabad.html", L.faridabad),
-    ("ac-service-ghaziabad.html", L.ghaziabad),
+    ("ac-repair.html",            ac_repair),
+    ("ac-servicing.html",         ac_servicing),
+    ("ac-installation.html",      ac_installation),
+    ("ac-amc.html",               ac_amc),
+    ("ac-service-delhi.html",     delhi),
+    ("ac-service-gurgaon.html",   gurgaon),
+    ("ac-service-noida.html",     noida),
+    ("ac-service-faridabad.html", faridabad),
+    ("ac-service-ghaziabad.html", ghaziabad),
 ]
 
 if __name__ == "__main__":
