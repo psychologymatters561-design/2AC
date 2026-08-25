@@ -8,6 +8,7 @@ this script does it idempotently: running it twice changes nothing.
 
   - keyword-stuffed footer blocks removed
   - placeholder form key replaced with the real one
+  - over-length titles and descriptions shortened
   - "HVAC" replaced with "AC" in visible copy only
   - logo <img> falls back to logo.svg when logo.png is missing
   - favicon points at logo.svg, since <link> cannot fall back
@@ -18,6 +19,22 @@ import glob, json, os, re
 
 SITE = "https://aircontrols.in"
 WEB3FORMS_KEY = "0b3287e6-ba3f-4a09-93ed-2212b40ea680"
+
+# Titles beyond roughly 60 characters get truncated in search results, and one
+# of these still carried trade jargon. Descriptions beyond ~155 truncate too.
+TITLE_OVERRIDES = {
+    "why-us.html": "Why Air Control | 38 Years of AC Engineering",
+    "blog/ac-market-guide-delhi.html": "AC Buying Guide for Delhi NCR | Air Control",
+    "blog/choose-hvac-small-apartment.html": "Choosing an AC for a Small Apartment | Air Control",
+}
+DESC_OVERRIDES = {
+    "blog/ac-market-guide-delhi.html":
+        "A practical guide to buying an AC in Delhi NCR: where to look, what to "
+        "check and what to avoid. Call +91 93122 64832.",
+    "blog/choose-hvac-small-apartment.html":
+        "How to choose the right AC for a small apartment in Delhi NCR: sizing, "
+        "placement and running costs. Call +91 93122 64832.",
+}
 GENERATED = {
     "ac-repair.html", "ac-servicing.html", "ac-installation.html", "ac-amc.html",
     "ac-service-delhi.html", "ac-service-gurgaon.html", "ac-service-noida.html",
@@ -91,6 +108,21 @@ def normalise(path):
     # A placeholder form key means the form accepts submissions and silently
     # discards them, so every lead through that page is lost.
     html = html.replace("YOUR_WEB3FORMS_ACCESS_KEY", WEB3FORMS_KEY)
+
+    # Over-length titles and descriptions truncate in search results.
+    title = TITLE_OVERRIDES.get(path)
+    if title:
+        html = re.sub(r"<title>.*?</title>", f"<title>{title}</title>", html,
+                      count=1, flags=re.S)
+        for attr in ('property="og:title"', 'name="twitter:title"'):
+            html = re.sub(r'(<meta ' + re.escape(attr) + r' content=")[^"]*(")',
+                          r"\g<1>" + title + r"\g<2>", html, count=1)
+    desc = DESC_OVERRIDES.get(path)
+    if desc:
+        for attr in ('name="description"', 'property="og:description"',
+                     'name="twitter:description"'):
+            html = re.sub(r'(<meta ' + re.escape(attr) + r' content=")[^"]*(")',
+                          r"\g<1>" + desc + r"\g<2>", html, count=1)
 
     html = strip_visible_hvac(html)
 
