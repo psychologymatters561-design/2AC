@@ -6,6 +6,9 @@ The generated service and location pages get these properties from the
 template in build.py. The hand-written pages need them applied in place, so
 this script does it idempotently: running it twice changes nothing.
 
+  - keyword-stuffed footer blocks removed
+  - placeholder form key replaced with the real one
+  - "HVAC" replaced with "AC" in visible copy only
   - logo <img> falls back to logo.svg when logo.png is missing
   - favicon points at logo.svg, since <link> cannot fall back
   - images below the fold get loading="lazy"
@@ -14,6 +17,7 @@ this script does it idempotently: running it twice changes nothing.
 import glob, json, os, re
 
 SITE = "https://aircontrols.in"
+WEB3FORMS_KEY = "0b3287e6-ba3f-4a09-93ed-2212b40ea680"
 GENERATED = {
     "ac-repair.html", "ac-servicing.html", "ac-installation.html", "ac-amc.html",
     "ac-service-delhi.html", "ac-service-gurgaon.html", "ac-service-noida.html",
@@ -39,10 +43,56 @@ def crumb_schema(trail):
             "@type": "BreadcrumbList", "itemListElement": items}
 
 
+def strip_visible_hvac(html):
+    """
+    Replace "HVAC" with "AC" in visible copy only.
+
+    Trade jargon, and the brief asks for consumer-facing wording on the page.
+    Attributes, script, style and meta tags are left alone, so keyword and
+    schema values keep their SEO weight and no filename in an href is ever
+    rewritten (which would silently break the link).
+    """
+    start = html.find("<body")
+    if start == -1:
+        return html
+    head, body = html[:start], html[start:]
+    parts = re.split(r"(<[^>]+>)", body)
+    skip = 0
+    for i, part in enumerate(parts):
+        if part.startswith("<"):
+            tag = part.lower()
+            if tag.startswith(("<script", "<style")):
+                skip += 1
+            elif tag.startswith(("</script", "</style")):
+                skip = max(0, skip - 1)
+            continue
+        if skip:
+            continue
+        parts[i] = re.sub(r"\bHVAC\b", "AC", part)
+    return head + "".join(parts)
+
+
 def normalise(path):
     html = open(path, encoding="utf-8").read()
     original = html
     prefix = "../" * path.count("/")
+
+    # Some footer-seo blocks hold a legitimate paragraph describing the
+    # services and areas covered; others hold dozens of comma-separated
+    # "<thing> near me" search phrases, which read as spam to a visitor and
+    # risk a ranking penalty. Remove only the latter, identified by a run of
+    # "near me" phrases that no ordinary sentence would contain.
+    def drop_if_stuffed(m):
+        text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(0)))
+        return "" if len(re.findall(r"near me", text, re.I)) >= 5 else m.group(0)
+
+    html = re.sub(r'<div class="footer-seo".*?</div>', drop_if_stuffed, html, flags=re.S)
+
+    # A placeholder form key means the form accepts submissions and silently
+    # discards them, so every lead through that page is lost.
+    html = html.replace("YOUR_WEB3FORMS_ACCESS_KEY", WEB3FORMS_KEY)
+
+    html = strip_visible_hvac(html)
 
     # Some pages fell back to a third-party placeholder service. That is an
     # external request on every page view and renders generic text instead of
