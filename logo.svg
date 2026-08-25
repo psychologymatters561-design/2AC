@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Air Control">
+  <title>Air Control</title>
+  <defs>
+    <linearGradient id="acBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12294a"/>
+      <stop offset="1" stop-color="#0a1628"/>
+    </linearGradient>
+    <linearGradient id="acOval" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2f5fd0"/>
+      <stop offset="1" stop-color="#1c47a8"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="200" height="200" fill="url(#acBg)"/>
+
+  <!-- oval badge -->
+  <ellipse cx="100" cy="88" rx="76" ry="54" fill="#ffffff"/>
+  <ellipse cx="100" cy="88" rx="70" ry="48" fill="url(#acOval)"/>
+  <ellipse cx="100" cy="88" rx="62" ry="41" fill="none" stroke="#ffffff" stroke-width="5"/>
+
+  <!-- "Air" wordmark -->
+  <text x="100" y="99" text-anchor="middle" fill="#ffffff"
+        font-family="Georgia, 'Times New Roman', serif" font-size="46"
+        font-style="italic" font-weight="700" letter-spacing="-1">Air</text>
+
+  <!-- swoosh under the wordmark -->
+  <path d="M46 108 C70 124 132 124 156 100" fill="none" stroke="#ffffff"
+        stroke-width="7" stroke-linecap="round"/>
+
+  <!-- brand name -->
+  <text x="100" y="168" text-anchor="middle" fill="#3f6fd8"
+        font-family="'Helvetica Neue', Arial, sans-serif" font-size="27"
+        font-weight="700" letter-spacing="1">AIR CONTROL</text>
+
+  <!-- established line -->
+  <text x="100" y="188" text-anchor="middle" fill="#c8a86e"
+        font-family="Georgia, serif" font-size="13" letter-spacing="1.4">EST. 1987</text>
+</svg>
