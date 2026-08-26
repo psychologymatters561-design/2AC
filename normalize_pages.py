@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Normalise the hand-written pages (homepage, why-us, blog).
+Normalise the hand-written pages (homepage, why-us, older blog posts).
 
-The generated service and location pages get these properties from the
-template in build.py. The hand-written pages need them applied in place, so
-this script does it idempotently: running it twice changes nothing.
+The generated pages get these properties from the templates in build.py and
+build_blog.py. The hand-written ones need them applied in place, so this
+script does it idempotently: running it twice changes nothing.
 
   - keyword-stuffed footer blocks removed
   - placeholder form key replaced with the real one
@@ -35,10 +35,17 @@ DESC_OVERRIDES = {
         "How to choose the right AC for a small apartment in Delhi NCR: sizing, "
         "placement and running costs. Call +91 93122 64832.",
 }
+
+# Pages produced by build_all.py. The normaliser must not touch these, or it
+# would fight the template on every build.
 GENERATED = {
     "ac-repair.html", "ac-servicing.html", "ac-installation.html", "ac-amc.html",
     "ac-service-delhi.html", "ac-service-gurgaon.html", "ac-service-noida.html",
     "ac-service-faridabad.html", "ac-service-ghaziabad.html",
+    "blog.html",
+    "blog/ac-not-cooling.html", "blog/ac-gas-filling-cost-delhi.html",
+    "blog/how-often-ac-service.html", "blog/best-ac-for-home.html",
+    "blog/ac-amc-worth-it.html",
 }
 
 
