@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Air Control | 45° to 22° — Engineered, Not Improvised</title>
+<meta name="description" content="Scroll from a Delhi rooftop at 45°C down to engineered comfort at 22°C. 38 years of AC engineering for embassies, hospitals and Fortune 500 offices.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://aircontrols.in/experience.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aircontrols.in/experience.html">
+<meta property="og:title" content="Air Control | 45° to 22° — Engineered, Not Improvised">
+<meta property="og:description" content="Scroll from a Delhi rooftop at 45°C down to engineered comfort at 22°C. 38 years of AC engineering.">
+<meta property="og:image" content="https://aircontrols.in/logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Air Control | 45° to 22°">
+<meta name="twitter:description" content="Scroll from a Delhi rooftop at 45°C down to engineered comfort at 22°C.">
+<meta name="twitter:image" content="https://aircontrols.in/logo.png">
+<meta name="theme-color" content="#0a1628">
+<link rel="icon" href="logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://aircontrols.in/#business",
+      "name": "Air Control",
+      "description": "AC repair, servicing, installation and annual maintenance across Delhi NCR since 1987. Trusted by embassies, hospitals and Fortune 500 offices.",
+      "url": "https://aircontrols.in",
+      "logo": "https://aircontrols.in/logo.png",
+      "image": "https://aircontrols.in/logo.png",
+      "telephone": "+919312264832",
+      "email": "ajay@aircontrols.in",
+      "foundingDate": "1987",
+      "priceRange": "₹₹",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Ground Floor, 209, Sant Nagar, East of Kailash",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110065",
+        "addressCountry": "IN"
+      },
+      "geo": {"@type": "GeoCoordinates", "latitude": "28.5530", "longitude": "77.2436"},
+      "areaServed": [
+        {"@type": "City", "name": "Delhi"},
+        {"@type": "City", "name": "Gurgaon"},
+        {"@type": "City", "name": "Noida"},
+        {"@type": "City", "name": "Faridabad"},
+        {"@type": "City", "name": "Ghaziabad"}
+      ],
+      "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "150", "bestRating": "5", "worstRating": "1"}
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://aircontrols.in/"},
+        {"@type": "ListItem", "position": 2, "name": "45° to 22°"}
+      ]
+    }
+  ]
+}
+</script>
+<style>
+/* ============================================================
+   TOKENS — the ground travels from heat to cool as you scroll.
+   --t is the journey (0 = 45°C rooftop, 1 = 22°C engineered).
+   Everything temperature-dependent reads from --ground / --air.
+   ============================================================ */
+:root{
+  --navy:#0a1628; --navy-2:#0d1d33; --navy-3:#122744;
+  --royal:#1e3a5f; --gold:#c8a86e; --gold-lt:#e6d0a3; --gold-dk:#9c7f45;
+  --ember:#c2410c; --sand:#7c4a1e;
+  --paper:#f6f3ee; --ink:#0f1c2e; --muted:#67768f;
+  --ease:cubic-bezier(.22,1,.36,1);
+  --max:1240px;
+  --t:0;                 /* journey 0..1, written by JS */
+  --ground:#1a0e06;      /* current page ground colour */
+  --air:#f0d9b8;         /* current foreground/air colour */
+  --px:0; --py:0;        /* pointer, -1..1, written by JS */
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'DM Sans',system-ui,sans-serif;
+  background:var(--ground);
+  color:var(--air);
+  line-height:1.65;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  transition:background-color .18s linear;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:none}
+ul{list-style:none}
+::selection{background:var(--gold);color:#0a1628}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:600;line-height:1.08;letter-spacing:-.02em}
+em{font-style:italic;color:var(--gold)}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 clamp(20px,4vw,40px)}
+.mono{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  font-variant-numeric:tabular-nums;letter-spacing:.06em}
+
+/* ===== FIXED WORLD LAYER (canvas atmosphere) ===== */
+#sky{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+/* ===== TEMPERATURE HUD — the signature instrument ===== */
+.hud{
+  position:fixed;right:clamp(16px,3vw,38px);top:50%;transform:translateY(-50%);
+  z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:10px;
+  pointer-events:none;mix-blend-mode:difference;
+}
+.hud-temp{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.4rem);
+  font-weight:700;line-height:.9;color:#fff;font-variant-numeric:tabular-nums}
+.hud-temp sup{font-size:.4em;vertical-align:super;margin-left:.06em}
+.hud-label{font-size:9.5px;letter-spacing:.22em;text-transform:uppercase;color:#fff;opacity:.75}
+.hud-track{width:2px;height:clamp(90px,16vh,150px);background:rgba(255,255,255,.25);
+  position:relative;border-radius:2px;overflow:hidden}
+.hud-fill{position:absolute;left:0;right:0;top:0;background:#fff;height:0%}
+@media(max-width:820px){
+  /* on a phone the centre-right HUD lands on the headline, so it moves
+     down beside the sticky bar where nothing else is competing */
+  .hud{top:auto;bottom:74px;right:14px;transform:none;
+    flex-direction:row;align-items:flex-end;gap:9px}
+  .hud-temp{font-size:2rem}
+  .hud-label{margin-bottom:3px}
+  .hud-track{width:44px;height:2px}
+  /* on touch the cue states the obvious and collides with the HUD */
+  .scroll-cue{display:none}
+  .hud-fill{top:0;bottom:0;left:0;right:auto;height:auto;width:0}
+}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:70;display:flex;align-items:center;
+  justify-content:space-between;gap:20px;padding:16px clamp(18px,4vw,40px);
+  transition:background-color .5s var(--ease),padding .5s var(--ease),backdrop-filter .5s}
+nav.solid{background:rgba(8,16,28,.72);backdrop-filter:blur(18px) saturate(150%);padding:10px clamp(18px,4vw,40px)}
+.brand{display:flex;align-items:center;gap:11px}
+.brand img{height:44px;width:44px;object-fit:cover;border-radius:50%;
+  border:1.5px solid rgba(200,168,110,.5);background:#0a1628}
+.brand-n{font-family:'Playfair Display',serif;font-size:17.5px;font-weight:700;color:#fff;line-height:1.05}
+.brand-s{font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-top:2px}
+.nav-call{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:100px;
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold) 60%,var(--gold-dk));
+  color:#12203a;font-size:13px;font-weight:700;white-space:nowrap;
+  box-shadow:0 6px 22px rgba(200,168,110,.3);transition:transform .35s var(--ease)}
+.nav-call:hover{transform:translateY(-2px)}
+
+/* ===== ACT 1: HERO — pinned dolly ===== */
+.act1{position:relative;height:420vh}
+.act1-pin{position:sticky;top:0;height:100vh;overflow:hidden;
+  display:flex;align-items:center;justify-content:center}
+/* the sky the whole scene sits in */
+.act1-pin::before{content:'';position:absolute;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 60% 42% at 68% 34%, rgba(255,168,72,.30), transparent 62%),
+    radial-gradient(ellipse 90% 55% at 50% 96%, rgba(120,52,14,.55), transparent 70%),
+    linear-gradient(#150b04 0%, #3d2009 48%, #6b3a12 100%);
+  background-color:#150b04}
+
+/* depth planes: bottom-anchored, each recedes at its own rate = a dolly */
+.plane{position:absolute;left:50%;bottom:0;width:min(2000px,200vw);
+  transform-origin:50% 100%;pointer-events:none;will-change:transform,opacity;z-index:1}
+.plane svg{display:block;width:100%;height:auto}
+
+.hero-copy{position:relative;z-index:6;text-align:center;padding:0 clamp(20px,5vw,40px);
+  max-width:1080px;will-change:transform,opacity}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:10.5px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--gold-lt);margin-bottom:22px;
+  padding:7px 16px;border:1px solid rgba(200,168,110,.35);border-radius:100px;
+  background:rgba(0,0,0,.2);backdrop-filter:blur(6px)}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--ember);
+  box-shadow:0 0 0 0 rgba(194,65,12,.7);animation:beat 2.4s infinite}
+@keyframes beat{0%,100%{box-shadow:0 0 0 0 rgba(194,65,12,.65)}70%{box-shadow:0 0 0 11px rgba(194,65,12,0)}}
+
+/* headline assembles line by line, driven by scroll not time */
+.h-line{display:block;overflow:hidden}
+.h-line>span{display:block;font-family:'Playfair Display',serif;font-weight:700;
+  font-size:clamp(2.5rem,8.2vw,6.6rem);line-height:1.0;letter-spacing:-.035em;color:#fff;
+  transform:translateY(110%);opacity:0;
+  transition:transform 1s var(--ease),opacity .8s var(--ease)}
+.h-line.on>span{transform:none;opacity:1}
+.h-sub{max-width:610px;margin:26px auto 0;font-size:clamp(1rem,1.7vw,1.16rem);
+  line-height:1.75;color:rgba(255,255,255,.72);opacity:0;transform:translateY(20px);
+  transition:all 1s var(--ease) .25s}
+.h-sub.on{opacity:1;transform:none}
+.scroll-cue{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:7;
+  display:flex;flex-direction:column;align-items:center;gap:9px;
+  font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.cue-rail{width:1px;height:52px;background:linear-gradient(rgba(255,255,255,.4),transparent);position:relative}
+.cue-rail::after{content:'';position:absolute;top:0;left:-1px;width:3px;height:14px;
+  background:var(--gold);border-radius:2px;animation:fall 2.1s var(--ease) infinite}
+@keyframes fall{0%{top:0;opacity:0}25%{opacity:1}100%{top:40px;opacity:0}}
+
+/* ===== ACT 2: FAILURE RAIL — pins, pans sideways ===== */
+.act2{position:relative;height:400vh}
+.act2-pin{position:sticky;top:0;height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.rail-head{padding:0 clamp(20px,5vw,60px);margin-bottom:clamp(24px,4vh,48px)}
+.sec-label{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:block}
+.rail-head h2{font-size:clamp(1.9rem,4.6vw,3.4rem);color:#fff;max-width:22ch}
+.rail{display:flex;gap:clamp(18px,2.6vw,38px);padding:0 clamp(20px,5vw,60px);
+  padding-right:clamp(120px,14vw,240px);will-change:transform}
+.fail{flex:0 0 clamp(280px,38vw,520px);border-radius:20px;padding:clamp(24px,3vw,38px);
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.11);
+  backdrop-filter:blur(9px);position:relative;overflow:hidden;min-height:clamp(300px,44vh,430px);
+  display:flex;flex-direction:column}
+.fail::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--ember),transparent)}
+.fail-n{font-family:'Playfair Display',serif;font-size:13px;color:var(--gold);
+  letter-spacing:.12em;margin-bottom:auto}
+.fail h3{font-size:clamp(1.25rem,2.1vw,1.7rem);color:#fff;margin:26px 0 12px}
+.fail p{font-size:14.2px;line-height:1.75;color:rgba(255,255,255,.62)}
+.fail-cost{margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1);
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ember)}
+
+/* ===== STANDARD SECTIONS ===== */
+.act{position:relative;padding:clamp(90px,14vh,180px) 0;z-index:2}
+.act-head{max-width:760px;margin-bottom:clamp(40px,7vh,80px);padding-right:clamp(0px,6vw,110px)}
+.act-head h2{font-size:clamp(1.9rem,4.4vw,3.3rem);color:#fff;margin-bottom:20px}
+.act-head p{font-size:clamp(1rem,1.5vw,1.1rem);line-height:1.8;color:rgba(255,255,255,.6)}
+
+.rev{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rev.on{opacity:1;transform:none}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+
+/* self-drawing SVG standards */
+.stds{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:clamp(20px,3vw,36px)}
+.std{padding:clamp(26px,3vw,38px);border-radius:18px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+.std svg{width:56px;height:56px;margin-bottom:22px}
+.std svg path,.std svg circle,.std svg line{
+  stroke:var(--gold);stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:var(--len,200);stroke-dashoffset:var(--len,200);
+  transition:stroke-dashoffset 1.5s var(--ease)}
+.std.on svg path,.std.on svg circle,.std.on svg line{stroke-dashoffset:0}
+.std h3{font-size:clamp(1.15rem,1.9vw,1.45rem);color:#fff;margin-bottom:12px}
+.std p{font-size:14.4px;line-height:1.78;color:rgba(255,255,255,.62)}
+
+/* services */
+.works{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:clamp(18px,2.4vw,28px)}
+.work{padding:clamp(26px,3vw,36px);border-radius:18px;position:relative;overflow:hidden;
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);
+  transition:transform .55s var(--ease),border-color .55s var(--ease),background-color .55s var(--ease)}
+.work:hover{transform:translateY(-7px);border-color:rgba(200,168,110,.42);background:rgba(200,168,110,.07)}
+.work h3{font-size:clamp(1.1rem,1.8vw,1.4rem);color:#fff;margin-bottom:11px}
+.work p{font-size:13.8px;line-height:1.75;color:rgba(255,255,255,.6);margin-bottom:18px}
+.work a{font-size:12.5px;font-weight:700;letter-spacing:.05em;color:var(--gold);
+  display:inline-flex;gap:7px;transition:gap .35s var(--ease)}
+.work:hover a{gap:13px}
+
+/* proof marquee */
+.proof{overflow:hidden;position:relative;padding:clamp(22px,3vh,34px) 0;
+  border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1)}
+.proof::before,.proof::after{content:'';position:absolute;top:0;bottom:0;width:110px;z-index:2;pointer-events:none}
+.proof::before{left:0;background:linear-gradient(90deg,var(--ground),transparent)}
+.proof::after{right:0;background:linear-gradient(270deg,var(--ground),transparent)}
+.proof-track{display:flex;gap:52px;width:max-content;animation:slide 38s linear infinite}
+.proof:hover .proof-track{animation-play-state:paused}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.proof-item{display:flex;align-items:center;gap:11px;white-space:nowrap;
+  font-size:13.5px;color:rgba(255,255,255,.55)}
+.proof-item b{color:var(--gold);font-weight:600}
+
+/* counters */
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:clamp(22px,3vw,40px);
+  margin-top:clamp(40px,6vh,70px);text-align:center}
+.num-v{font-family:'Playfair Display',serif;font-size:clamp(2.3rem,5vw,3.6rem);
+  font-weight:700;color:var(--gold);line-height:1;font-variant-numeric:tabular-nums}
+.num-v em{font-style:normal;font-size:.55em}
+.num-l{font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);margin-top:10px}
+
+/* ===== FINAL ACT: the ask ===== */
+.ask{position:relative;padding:clamp(90px,14vh,170px) 0 0;z-index:2}
+.ask-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(34px,5vw,70px);align-items:start}
+@media(max-width:900px){.ask-grid{grid-template-columns:1fr}}
+.ask h2{font-size:clamp(2rem,4.8vw,3.5rem);color:#fff;margin-bottom:20px}
+.ask>.wrap>.ask-grid p.lede{font-size:clamp(1rem,1.5vw,1.12rem);line-height:1.8;color:rgba(255,255,255,.62)}
+.direct{margin-top:34px;display:flex;flex-direction:column;gap:14px}
+.direct a{display:flex;align-items:center;gap:14px;padding:17px 22px;border-radius:14px;
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.1);
+  transition:all .4s var(--ease)}
+.direct a:hover{background:rgba(200,168,110,.1);border-color:rgba(200,168,110,.4);transform:translateX(5px)}
+.direct .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;
+  background:rgba(200,168,110,.14);font-size:17px;flex-shrink:0}
+.direct a>span:last-child{display:flex;flex-direction:column;gap:3px;min-width:0}
+.direct .k{display:block;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);line-height:1}
+.direct .v{display:block;font-size:15px;color:#fff;font-weight:600;line-height:1.2}
+
+form{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  border-radius:22px;padding:clamp(26px,3.4vw,42px);backdrop-filter:blur(12px)}
+form h3{font-size:clamp(1.3rem,2.2vw,1.75rem);color:#fff;margin-bottom:8px}
+form>p{font-size:13.8px;color:rgba(255,255,255,.55);margin-bottom:26px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+@media(max-width:560px){.row{grid-template-columns:1fr}}
+.f label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.5);margin-bottom:7px}
+.f input,.f select,.f textarea{width:100%;padding:13px 15px;border-radius:11px;font-size:14.5px;
+  background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);
+  color:#fff;outline:none;transition:all .3s var(--ease);font-family:inherit}
+.f input::placeholder,.f textarea::placeholder{color:rgba(255,255,255,.32)}
+.f input:focus,.f select:focus,.f textarea:focus{
+  border-color:var(--gold);background:rgba(200,168,110,.09);
+  box-shadow:0 0 0 3px rgba(200,168,110,.14)}
+.f select{appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c8a86e' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 15px center;background-size:11px}
+.f select option{background:#0d1d33;color:#fff}
+.f textarea{resize:vertical;min-height:96px}
+.submit{width:100%;margin-top:20px;padding:17px;border-radius:100px;font-size:15px;font-weight:700;
+  background:linear-gradient(135deg,var(--gold-lt),var(--gold) 55%,var(--gold-dk));color:#12203a;
+  box-shadow:0 10px 30px rgba(200,168,110,.32);transition:all .4s var(--ease)}
+.submit:hover{transform:translateY(-2px);box-shadow:0 16px 42px rgba(200,168,110,.45)}
+.fine{font-size:11.5px;color:rgba(255,255,255,.42);text-align:center;margin-top:15px}
+
+footer{margin-top:clamp(70px,11vh,130px);padding:44px 0;
+  border-top:1px solid rgba(255,255,255,.1);font-size:13px;color:rgba(255,255,255,.45)}
+.foot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:center}
+.foot a{color:var(--gold)}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap}
+.foot-links a{color:rgba(255,255,255,.5);transition:color .3s}
+.foot-links a:hover{color:var(--gold)}
+
+/* mobile sticky */
+.mbar{position:fixed;bottom:0;left:0;right:0;z-index:80;display:none;gap:1px;
+  background:rgba(200,168,110,.2)}
+.mbar a{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:15px 8px;font-size:14px;font-weight:700}
+.mbar .c{background:linear-gradient(135deg,var(--gold-lt),var(--gold));color:#12203a}
+.mbar .w{background:linear-gradient(135deg,#25d366,#1da851);color:#fff}
+@media(max-width:768px){
+  .mbar{display:flex}
+  body{padding-bottom:52px}
+  .act1{height:340vh}
+  .act2{height:330vh}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .h-line>span{transform:none;opacity:1}
+  .rev{opacity:1;transform:none}
+  .h-sub{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<canvas id="sky"></canvas>
+
+<nav id="nav">
+  <a class="brand" href="index.html">
+    <img src="logo.png" alt="Air Control" width="44" height="44"
+         onerror="this.onerror=null;this.src='logo.svg'">
+    <div><div class="brand-n">Air Control</div><div class="brand-s">Est. 1987</div></div>
+  </a>
+  <a class="nav-call" href="tel:+919312264832">📞 +91 93122 64832</a>
+</nav>
+
+<div class="hud" aria-hidden="true">
+  <div class="hud-temp"><span id="temp">45</span><sup>°C</sup></div>
+  <div class="hud-label" id="tempState">Rooftop</div>
+  <div class="hud-track"><div class="hud-fill" id="tempFill"></div></div>
+</div>
+
+<!-- ============ ACT ONE — the descent begins ============ -->
+<section class="act1" id="act1">
+  <div class="act1-pin">
+    <!-- depth planes: far skyline, mid rooftop, near condensers -->
+    <!-- far: city dissolving in heat haze -->
+    <div class="plane" id="p1" style="opacity:.5">
+      <svg viewBox="0 0 2000 520" preserveAspectRatio="xMidYMax meet">
+        <g fill="rgba(255,196,128,.13)">
+          <rect x="40" y="250" width="104" height="270"/><rect x="168" y="186" width="82" height="334"/>
+          <rect x="272" y="300" width="126" height="220"/><rect x="424" y="132" width="94" height="388"/>
+          <rect x="546" y="242" width="110" height="278"/><rect x="682" y="176" width="76" height="344"/>
+          <rect x="784" y="286" width="138" height="234"/><rect x="948" y="150" width="98" height="370"/>
+          <rect x="1072" y="262" width="116" height="258"/><rect x="1214" y="200" width="86" height="320"/>
+          <rect x="1326" y="304" width="132" height="216"/><rect x="1484" y="140" width="102" height="380"/>
+          <rect x="1612" y="256" width="120" height="264"/><rect x="1758" y="192" width="88" height="328"/>
+          <rect x="1872" y="288" width="124" height="232"/>
+        </g>
+      </svg>
+    </div>
+    <!-- mid: parapet, water tanks, cable runs -->
+    <div class="plane" id="p2" style="opacity:.85">
+      <svg viewBox="0 0 2000 460" preserveAspectRatio="xMidYMax meet">
+        <g fill="rgba(28,12,4,.82)">
+          <rect x="0" y="330" width="2000" height="130"/>
+          <rect x="120" y="232" width="190" height="98" rx="5"/>
+          <rect x="470" y="256" width="150" height="74" rx="5"/>
+          <rect x="820" y="214" width="210" height="116" rx="5"/>
+          <rect x="1240" y="248" width="164" height="82" rx="5"/>
+          <rect x="1596" y="228" width="196" height="102" rx="5"/>
+        </g>
+        <g stroke="rgba(255,178,104,.30)" stroke-width="2" fill="none">
+          <path d="M120 232q95-46 190 0M820 214q105-52 210 0M1596 228q98-48 196 0"/>
+          <path d="M0 300q250 46 500 0t500 0 500 0 500 0"/>
+        </g>
+      </svg>
+    </div>
+    <!-- near: condenser banks, fins catching the last light -->
+    <div class="plane" id="p3">
+      <svg viewBox="0 0 2000 560" preserveAspectRatio="xMidYMax meet">
+        <g fill="rgba(12,5,2,.94)"><rect x="-40" y="392" width="2080" height="168"/></g>
+        <g fill="rgba(18,8,3,.96)" stroke="rgba(255,186,110,.34)" stroke-width="2.5">
+          <rect x="96" y="168" width="368" height="224" rx="8"/>
+          <rect x="812" y="126" width="404" height="266" rx="8"/>
+          <rect x="1560" y="182" width="352" height="210" rx="8"/>
+        </g>
+        <g stroke="rgba(255,186,110,.5)" stroke-width="3" fill="none">
+          <circle cx="280" cy="280" r="62"/><circle cx="1014" cy="259" r="74"/><circle cx="1736" cy="287" r="58"/>
+          <path d="M280 218v124M218 280h124" stroke-width="2" opacity=".55"/>
+          <path d="M1014 185v148M940 259h148" stroke-width="2" opacity=".55"/>
+          <path d="M1736 229v116M1678 287h116" stroke-width="2" opacity=".55"/>
+        </g>
+        <g stroke="rgba(255,170,90,.22)" stroke-width="1.6">
+          <path d="M120 196h320M120 214h320M120 232h320M120 328h320M120 346h320M120 364h320"/>
+          <path d="M838 152h352M838 172h352M838 192h352M838 326h352M838 346h352M838 366h352"/>
+          <path d="M1584 208h304M1584 226h304M1584 244h304M1584 330h304M1584 348h304M1584 366h304"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="pulse"></span>Delhi · 12 May · 45°C on the roof</div>
+      <h1>
+        <span class="h-line" id="l1"><span>Where Air Conditioning</span></span>
+        <span class="h-line" id="l2"><span>Is <em>Engineered</em>,</span></span>
+        <span class="h-line" id="l3"><span>Not Improvised</span></span>
+      </h1>
+      <p class="h-sub" id="hsub">Thirty-eight years of getting Delhi from unbearable to exact.
+        Scroll down and travel the same 23 degrees our engineers deliver every day.</p>
+    </div>
+
+    <div class="scroll-cue"><span>Begin the descent</span><div class="cue-rail"></div></div>
+  </div>
+</section>
+
+<!-- ============ ACT TWO — what failure costs ============ -->
+<section class="act2" id="act2">
+  <div class="act2-pin">
+    <div class="rail-head">
+      <span class="sec-label">The cost of improvised</span>
+      <h2>Four ways an AC<br>dies before its time</h2>
+    </div>
+    <div class="rail" id="rail">
+      <article class="fail">
+        <div class="fail-n mono">01 / SKIPPED STEP</div>
+        <h3>No vacuum evacuation</h3>
+        <p>Air and moisture left inside the refrigerant circuit form acids that corrode the compressor
+           from within. Invisible on day one. Fatal by year three. It is the most commonly skipped step
+           in a cheap installation, because no customer can see whether it was done.</p>
+        <div class="fail-cost mono">Costs you the compressor</div>
+      </article>
+      <article class="fail">
+        <div class="fail-n mono">02 / SKIPPED STEP</div>
+        <h3>Gas topped up, leak ignored</h3>
+        <p>Refrigerant sits in a sealed loop. It is not consumed, so if it is low, it leaked. Recharging
+           without finding the leak means paying for the same gas next summer, while the system runs
+           starved and the compressor takes the punishment.</p>
+        <div class="fail-cost mono">Costs you the same bill, twice</div>
+      </article>
+      <article class="fail">
+        <div class="fail-n mono">03 / SKIPPED STEP</div>
+        <h3>Drainage without fall</h3>
+        <p>A drain line run flat holds water instead of shedding it. It reads fine at handover and
+           reappears a year later as a stain spreading across your ceiling. Nearly every "AC leaking
+           water" call we attend is drainage that was never set correctly.</p>
+        <div class="fail-cost mono">Costs you the ceiling</div>
+      </article>
+      <article class="fail">
+        <div class="fail-n mono">04 / SKIPPED STEP</div>
+        <h3>Sized on floor area</h3>
+        <p>A chart says square feet. A west-facing top floor with full glazing says otherwise. Size on
+           the chart and the system runs flat out all afternoon and still loses, or it is oversized,
+           short-cycles, and leaves the room cold and clammy.</p>
+        <div class="fail-cost mono">Costs you every summer</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT THREE — the standard ============ -->
+<section class="act">
+  <div class="wrap">
+    <div class="act-head rev">
+      <span class="sec-label">The standard</span>
+      <h2>What we do instead</h2>
+      <p>None of this is exotic. It is the ordinary correct procedure, done every time, on every job,
+         including the ones nobody will ever inspect. That is the entire difference.</p>
+    </div>
+    <div class="stds">
+      <div class="std rev">
+        <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" style="--len:110"/>
+          <path d="M24 12v12l8 5" style="--len:30"/></svg>
+        <h3>Evacuated, then held</h3>
+        <p>We pull a deep vacuum and hold it, to prove the circuit is tight before a gram of refrigerant
+           goes in. The step that takes the extra hour is the step that buys the extra decade.</p>
+      </div>
+      <div class="std rev d1">
+        <svg viewBox="0 0 48 48"><path d="M8 30c6-14 26-14 32 0" style="--len:52"/>
+          <path d="M14 34h20" style="--len:22"/><circle cx="24" cy="18" r="4" style="--len:26"/></svg>
+        <h3>Charged by weight</h3>
+        <p>To the manufacturer's stated figure, adjusted for the actual pipe run. Not until the gauge
+           looks about right. Over and under both cost you capacity and compressor life.</p>
+      </div>
+      <div class="std rev d2">
+        <svg viewBox="0 0 48 48"><path d="M10 14h28v20H10z" style="--len:98"/>
+          <path d="M10 22h28" style="--len:29"/><path d="M18 34v6M30 34v6" style="--len:14"/></svg>
+        <h3>Sized on heat load</h3>
+        <p>Orientation, floor level, glazing, ceiling height, occupancy, equipment. We measure the room
+           you actually have, then specify. The survey is free and it is the part that matters most.</p>
+      </div>
+      <div class="std rev d3">
+        <svg viewBox="0 0 48 48"><path d="M24 6l15 8v12c0 9-6 14-15 17-9-3-15-8-15-17V14z" style="--len:105"/>
+          <path d="M17 24l5 5 10-10" style="--len:24"/></svg>
+        <h3>Documented, then warranted</h3>
+        <p>Commissioning readings recorded at handover, and a written report after every visit. It is
+           what makes a warranty claim straightforward and an audit uneventful.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT FOUR — the work ============ -->
+<section class="act">
+  <div class="wrap">
+    <div class="act-head rev">
+      <span class="sec-label">The work</span>
+      <h2>Four things, done properly</h2>
+    </div>
+    <div class="works">
+      <div class="work rev"><h3>AC Repair</h3>
+        <p>Not cooling, gas leaks, water, noise, tripping. We measure rather than guess, quote before
+           we start, and fix it once.</p>
+        <a href="ac-repair.html">Explore repair <span>→</span></a></div>
+      <div class="work rev d1"><h3>AC Servicing</h3>
+        <p>Deep cleaning, coil and condenser washing, drain clearing and a measured performance report.
+           Lower bills, fewer breakdowns.</p>
+        <a href="ac-servicing.html">Explore servicing <span>→</span></a></div>
+      <div class="work rev d2"><h3>AC Installation</h3>
+        <p>Split, cassette, ducted, central and VRF. Load-calculated, brazed, evacuated, charged by
+           weight and proven before handover.</p>
+        <a href="ac-installation.html">Explore installation <span>→</span></a></div>
+      <div class="work rev d3"><h3>AC AMC</h3>
+        <p>Scheduled preventive visits, priority response and documented reports. The programme our
+           embassy clients have kept for decades.</p>
+        <a href="ac-amc.html">Explore AMC <span>→</span></a></div>
+    </div>
+    <div class="nums">
+      <div class="rev"><div class="num-v"><span class="cnt" data-to="38">0</span><em>+</em></div><div class="num-l">Years unbroken</div></div>
+      <div class="rev d1"><div class="num-v"><span class="cnt" data-to="15">0</span><em>+</em></div><div class="num-l">Embassies served</div></div>
+      <div class="rev d2"><div class="num-v">2<em>hr</em></div><div class="num-l">Emergency response</div></div>
+      <div class="rev d3"><div class="num-v"><span class="cnt" data-to="0">0</span></div><div class="num-l">Safety incidents</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="proof">
+  <div class="proof-track" id="proofTrack"></div>
+</div>
+
+<!-- ============ FINAL ACT — 22°C ============ -->
+<section class="ask">
+  <div class="wrap">
+    <div class="ask-grid">
+      <div class="rev">
+        <span class="sec-label">22°C · Engineered</span>
+        <h2>You have arrived.<br>Now let us do it<br>in your building.</h2>
+        <p class="lede">Tell us what your AC is doing and a senior engineer calls you back within two
+          hours. No obligation, no script, and an honest answer even when it earns us less.</p>
+        <div class="direct">
+          <a href="tel:+919312264832"><span class="ic">📞</span>
+            <span><span class="k">Call directly</span><span class="v">+91 93122 64832</span></span></a>
+          <a href="https://wa.me/919312264832" target="_blank" rel="noopener"><span class="ic">💬</span>
+            <span><span class="k">WhatsApp</span><span class="v">Message us now</span></span></a>
+          <a href="mailto:ajay@aircontrols.in"><span class="ic">✉</span>
+            <span><span class="k">Email</span><span class="v">ajay@aircontrols.in</span></span></a>
+        </div>
+      </div>
+      <form class="rev d1" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="0b3287e6-ba3f-4a09-93ed-2212b40ea680">
+        <input type="hidden" name="subject" value="New Lead — Air Control 45→22 Experience">
+        <input type="hidden" name="from_name" value="aircontrols.in">
+        <h3>Get a free assessment</h3>
+        <p>We respond within two hours, seven days a week.</p>
+        <div class="row">
+          <div class="f"><label>Name *</label><input type="text" name="name" placeholder="Rajesh Sharma" required></div>
+          <div class="f"><label>Phone *</label><input type="tel" name="phone" placeholder="+91 98XXX XXXXX" required></div>
+        </div>
+        <div class="row">
+          <div class="f"><label>Locality *</label><input type="text" name="location" placeholder="Greater Kailash" required></div>
+          <div class="f"><label>Service *</label><select name="service" required>
+            <option value="">Select…</option>
+            <option>AC repair — not cooling</option><option>AC servicing</option>
+            <option>New installation</option><option>AMC contract</option>
+            <option>Emergency — urgent</option>
+          </select></div>
+        </div>
+        <div class="f" style="margin-bottom:6px"><label>What is happening?</label>
+          <textarea name="message" placeholder="Tell us what the AC is doing — the more detail, the better we can prepare."></textarea></div>
+        <button type="submit" class="submit">Request Free Assessment →</button>
+        <p class="fine">🔒 Your details stay with our engineers.</p>
+      </form>
+    </div>
+  </div>
+  <div class="wrap">
+    <footer>
+      <div class="foot">
+        <span>© 2025 Air Control · Ground Floor, 209, Sant Nagar, East of Kailash, New Delhi 110065</span>
+        <div class="foot-links">
+          <a href="index.html">Home</a><a href="ac-repair.html">Repair</a>
+          <a href="ac-amc.html">AMC</a><a href="ac-service-delhi.html">Delhi</a>
+          <a href="blog.html">Insights</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</section>
+
+<div class="mbar">
+  <a class="c" href="tel:+919312264832">📞 Call Now</a>
+  <a class="w" href="https://wa.me/919312264832" target="_blank" rel="noopener">💬 WhatsApp</a>
+</div>
+
+<script>
+'use strict';
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- the journey: scroll -> temperature -> everything ---------- */
+  var HOT  = [26,14,6],    COLD = [10,22,40];    // ground, rgb
+  var HOTA = [240,217,184],COLDA= [214,228,244];  // air, rgb
+  function mix(a,b,t){return 'rgb('+
+    Math.round(a[0]+(b[0]-a[0])*t)+','+
+    Math.round(a[1]+(b[1]-a[1])*t)+','+
+    Math.round(a[2]+(b[2]-a[2])*t)+')';}
+
+  var root=document.documentElement, tempEl=document.getElementById('temp'),
+      fillEl=document.getElementById('tempFill'), stateEl=document.getElementById('tempState'),
+      navEl=document.getElementById('nav');
+  var STATES=[[0,'Rooftop'],[.3,'Descending'],[.55,'Entering'],[.78,'Balancing'],[.92,'Engineered']];
+  var journey=0, target=0;
+
+  function readScroll(){
+    var max=document.documentElement.scrollHeight-innerHeight;
+    target = max>0 ? Math.min(1,Math.max(0,scrollY/max)) : 0;
+  }
+
+  /* ---------- act one: pinned dolly + line-by-line assembly ---------- */
+  var act1=document.getElementById('act1'),
+      p1=document.getElementById('p1'),p2=document.getElementById('p2'),p3=document.getElementById('p3'),
+      lines=[document.getElementById('l1'),document.getElementById('l2'),document.getElementById('l3')],
+      hsub=document.getElementById('hsub'),
+      heroCopy=document.querySelector('.hero-copy');
+
+  /* the headline assembles itself on arrival, line by line, then scroll
+     takes over and carries it away. Waiting for scroll to show line one
+     left the hero blank on load. */
+  function assemble(){
+    lines.forEach(function(el,i){ setTimeout(function(){ el.classList.add('on'); }, 260+i*190); });
+    setTimeout(function(){ hsub.classList.add('on'); }, 1080);
+  }
+  if(document.readyState==='complete') assemble();
+  else addEventListener('load',assemble);
+
+  // base opacity per plane, so haze depth survives the scroll fade
+  var BASE=[.5,.85,1];
+  function act1Frame(){
+    var r=act1.getBoundingClientRect(), h=act1.offsetHeight-innerHeight;
+    var p = h>0 ? Math.min(1,Math.max(0,-r.top/h)) : 0;
+    // each plane pushes toward the camera at its own rate — a dolly, not a slide
+    var pz=[[1.00,.30,.06],[1.10,.60,.13],[1.22,1.05,.24]], el=[p1,p2,p3];
+    for(var i=0;i<3;i++){
+      var s=pz[i][0]+p*pz[i][1];
+      var y=p*innerHeight*pz[i][2];
+      el[i].style.transform=
+        'translate3d(calc(-50% + '+(varPx*(i+1)*8).toFixed(1)+'px),'+
+        (y+varPy*(i+1)*6).toFixed(1)+'px,0) scale('+s.toFixed(4)+')';
+      el[i].style.opacity=(BASE[i]*Math.max(0,1-p*1.15)).toFixed(3);
+    }
+    // the copy lifts away as the camera pushes past it
+    heroCopy.style.transform=
+      'translate3d('+(varPx*-9).toFixed(1)+'px,'+(varPy*-7 - p*130).toFixed(1)+'px,0)';
+    heroCopy.style.opacity=Math.max(0,1-p*1.9).toFixed(3);
+  }
+
+  /* ---------- act two: pinned rail pans sideways ---------- */
+  var act2=document.getElementById('act2'), rail=document.getElementById('rail');
+  function act2Frame(){
+    var r=act2.getBoundingClientRect(), h=act2.offsetHeight-innerHeight;
+    var p = h>0 ? Math.min(1,Math.max(0,-r.top/h)) : 0;
+    var dist=Math.max(0, rail.scrollWidth - innerWidth + 40);
+    rail.style.transform='translate3d('+(-dist*p).toFixed(2)+'px,0,0)';
+  }
+
+  /* ---------- pointer: moves what is not scrolling ---------- */
+  var varPx=0, varPy=0, tx=0, ty=0;
+  if(!reduce && matchMedia('(pointer:fine)').matches){
+    addEventListener('mousemove',function(e){
+      tx=(e.clientX/innerWidth-.5)*2; ty=(e.clientY/innerHeight-.5)*2;
+    },{passive:true});
+  }
+
+  /* ---------- atmosphere canvas: heat above, cool below ---------- */
+  var cv=document.getElementById('sky'), cx=cv.getContext('2d'), W=0,H=0,DPR=1,motes=[];
+  function sizeCanvas(){
+    DPR=Math.min(devicePixelRatio||1,2);
+    W=innerWidth; H=innerHeight;
+    cv.width=W*DPR; cv.height=H*DPR; cv.style.width=W+'px'; cv.style.height=H+'px';
+    cx.setTransform(DPR,0,0,DPR,0,0);
+    var n=Math.round(Math.min(90,W/16));
+    motes=[];
+    for(var i=0;i<n;i++) motes.push({
+      x:Math.random()*W, y:Math.random()*H,
+      r:Math.random()*1.9+.35, s:Math.random()*.5+.12,
+      d:Math.random()*Math.PI*2, w:Math.random()*.9+.25
+    });
+  }
+  function drawSky(t){
+    cx.clearRect(0,0,W,H);
+    // heat haze bands at the top of the journey, stillness at the bottom
+    var heat=1-t;
+    if(heat>.02){
+      var bands=7;
+      for(var b=0;b<bands;b++){
+        var yy=H*(b/bands)+Math.sin(now*.0007+b*1.3)*11*heat;
+        var g=cx.createLinearGradient(0,yy,0,yy+H/bands);
+        g.addColorStop(0,'rgba(255,168,76,0)');
+        g.addColorStop(.5,'rgba(255,152,60,'+(0.045*heat).toFixed(3)+')');
+        g.addColorStop(1,'rgba(255,168,76,0)');
+        cx.fillStyle=g; cx.fillRect(0,yy,W,H/bands);
+      }
+    }
+    // motes: dust rising in the heat, settling to a slow cool drift
+    for(var i=0;i<motes.length;i++){
+      var m=motes[i];
+      m.d+=0.006;
+      m.x+=Math.sin(m.d)*m.w*(0.35+heat*0.9);
+      m.y-=m.s*(0.25+heat*1.25);
+      if(m.y<-8){m.y=H+8;m.x=Math.random()*W}
+      if(m.x<-8)m.x=W+8; if(m.x>W+8)m.x=-8;
+      var col = heat>.5 ? '236,170,96' : '176,204,236';
+      cx.beginPath(); cx.arc(m.x,m.y,m.r,0,6.2832);
+      cx.fillStyle='rgba('+col+','+(0.05+0.16*(heat>.5?heat:1-heat)).toFixed(3)+')';
+      cx.fill();
+    }
+  }
+
+  /* ---------- reveals + counters ---------- */
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){e.target.classList.add('on'); io.unobserve(e.target);} });
+  },{threshold:.16,rootMargin:'0px 0px -50px'});
+  document.querySelectorAll('.rev,.std').forEach(function(el){io.observe(el)});
+
+  var cio=new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      cio.unobserve(e.target);
+      var to=parseInt(e.target.dataset.to,10), st=performance.now(), dur=1500;
+      (function tick(n){
+        var p=Math.min((n-st)/dur,1), ease=1-Math.pow(1-p,3);
+        e.target.textContent=Math.round(ease*to);
+        if(p<1) requestAnimationFrame(tick); else e.target.textContent=to;
+      })(st);
+    });
+  },{threshold:.6});
+  document.querySelectorAll('.cnt').forEach(function(el){cio.observe(el)});
+
+  /* ---------- proof marquee (duplicated for a seamless loop) ---------- */
+  var PROOF=['🏛 <b>Vatican Embassy</b> · 35 years','📦 <b>DHL Express</b> · VRF across 3 floors',
+    '💎 <b>Tanishq</b> · Connaught Place','⭐ <b>4.9 / 5.0</b> · 150+ verified reviews',
+    '🛡 <b>Zero</b> safety incidents in 38 years','🏥 Hospitals · Hotels · Data centres',
+    '⚡ <b>2-hour</b> emergency response','📋 <b>15+</b> diplomatic missions'];
+  var track=document.getElementById('proofTrack'), html='';
+  for(var k=0;k<2;k++) for(var q=0;q<PROOF.length;q++)
+    html+='<span class="proof-item"'+(k?' aria-hidden="true"':'')+'>'+PROOF[q]+'</span>';
+  track.innerHTML=html;
+
+  /* ---------- one loop drives the whole page ---------- */
+  var now=0;
+  function frame(ts){
+    now=ts||0;
+    readScroll();
+    journey += (target-journey)*0.09;           // eased travel
+    varPx += (tx-varPx)*0.06;
+    varPy += (ty-varPy)*0.06;
+
+    var t=journey;
+    root.style.setProperty('--t',t.toFixed(4));
+    root.style.setProperty('--ground',mix(HOT,COLD,t));
+    root.style.setProperty('--air',mix(HOTA,COLDA,t));
+    root.style.setProperty('--px',varPx.toFixed(4));
+    root.style.setProperty('--py',varPy.toFixed(4));
+
+    var deg=Math.round(45-(45-22)*t);
+    if(tempEl.textContent!==String(deg)) tempEl.textContent=deg;
+    if(innerWidth<=820){ fillEl.style.width=(t*100).toFixed(1)+'%'; fillEl.style.height='auto'; }
+    else { fillEl.style.height=(t*100).toFixed(1)+'%'; fillEl.style.width='auto'; }
+    var s=STATES[0][1];
+    for(var i=0;i<STATES.length;i++) if(t>=STATES[i][0]) s=STATES[i][1];
+    if(stateEl.textContent!==s) stateEl.textContent=s;
+
+    navEl.classList.toggle('solid', scrollY>60);
+
+    act1Frame();
+    act2Frame();
+    if(!reduce) drawSky(t);
+
+    requestAnimationFrame(frame);
+  }
+
+  sizeCanvas();
+  addEventListener('resize',sizeCanvas,{passive:true});
+  readScroll(); journey=target;
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
