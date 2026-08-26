@@ -15,6 +15,7 @@ on:
       - "content_*.py"
       - "index.html"
       - "normalize_pages.py"
+      - "logo.png.b64"
       - ".github/workflows/build-pages.yml"
   workflow_dispatch:
 
@@ -34,6 +35,25 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Restore logo.png from base64
+        run: |
+          # logo.png is binary and cannot be written through the contents API,
+          # so it travels as base64 text and is decoded here. The checksum
+          # makes any corruption in transit fail the build instead of
+          # committing a broken image.
+          if [ -f logo.png.b64 ]; then
+            grep -v '^#' logo.png.b64 | tr -d '\n' | base64 -d > logo.png
+            want=$(grep '^# sha256' logo.png.b64 | awk '{print $3}')
+            got=$(sha256sum logo.png | awk '{print $1}')
+            if [ "$want" != "$got" ]; then
+              echo "logo.png checksum mismatch: expected $want, got $got"
+              exit 1
+            fi
+            echo "logo.png restored and verified ($(stat -c%s logo.png) bytes)"
+          else
+            echo "no logo.png.b64 present, skipping"
+          fi
 
       - name: Generate pages
         run: python3 build_all.py
@@ -90,10 +110,10 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          if git diff --quiet -- '*.html'; then
+          git add -A -- '*.html' logo.png
+          if git diff --cached --quiet; then
             echo "no changes to commit"
           else
-            git add '*.html'
-            git commit -m "Regenerate and normalise pages [skip ci]"
+            git commit -m "Regenerate pages and restore logo [skip ci]"
             git push
           fi
