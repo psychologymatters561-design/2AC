@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Air Control | 45° to 22° — Engineered, Not Improvised</title>
+<meta name="description" content="Scroll from a Delhi rooftop at 45°C down to engineered comfort at 22°C. 38 years of AC engineering for embassies, hospitals and Fortune 500 offices.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://aircontrols.in/experience.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aircontrols.in/experience.html">
+<meta property="og:title" content="Air Control | 45° to 22° — Engineered, Not Improvised">
+<meta property="og:description" content="Scroll from a Delhi rooftop at 45°C down to engineered comfort at 22°C. 38 years of AC engineering.">
+<meta property="og:image" content="https://aircontrols.in/logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Air Control | 45° to 22°">
+<meta name="twitter:description" content="Scroll from a Delhi rooftop at 45°C down to engineered comfort at 22°C.">
+<meta name="twitter:image" content="https://aircontrols.in/logo.png">
+<meta name="theme-color" content="#0a1628">
+<link rel="icon" href="logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://aircontrols.in/#business",
+      "name": "Air Control",
+      "description": "AC repair, servicing, installation and annual maintenance across Delhi NCR since 1987. Trusted by embassies, hospitals and Fortune 500 offices.",
+      "url": "https://aircontrols.in",
+      "logo": "https://aircontrols.in/logo.png",
+      "image": "https://aircontrols.in/logo.png",
+      "telephone": "+919312264832",
+      "email": "ajay@aircontrols.in",
+      "foundingDate": "1987",
+      "priceRange": "₹₹",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Ground Floor, 209, Sant Nagar, East of Kailash",
+        "addressLocality": "New Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110065",
+        "addressCountry": "IN"
+      },
+      "geo": {"@type": "GeoCoordinates", "latitude": "28.5530", "longitude": "77.2436"},
+      "areaServed": [
+        {"@type": "City", "name": "Delhi"},
+        {"@type": "City", "name": "Gurgaon"},
+        {"@type": "City", "name": "Noida"},
+        {"@type": "City", "name": "Faridabad"},
+        {"@type": "City", "name": "Ghaziabad"}
+      ],
+      "aggregateRating": {"@type": "AggregateRating", "ratingValue": "4.9", "reviewCount": "150", "bestRating": "5", "worstRating": "1"}
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://aircontrols.in/"},
+        {"@type": "ListItem", "position": 2, "name": "45° to 22°"}
+      ]
+    }
+  ]
+}
+</script>
+<style>/*__CSS__*/</style>
+</head>
+<body>
+
+<canvas id="sky"></canvas>
+
+<nav id="nav">
+  <a class="brand" href="index.html">
+    <img src="logo.png" alt="Air Control" width="44" height="44"
+         onerror="this.onerror=null;this.src='logo.svg'">
+    <div><div class="brand-n">Air Control</div><div class="brand-s">Est. 1987</div></div>
+  </a>
+  <a class="nav-call" href="tel:+919312264832">📞 +91 93122 64832</a>
+</nav>
+
+<div class="hud" aria-hidden="true">
+  <div class="hud-temp"><span id="temp">45</span><sup>°C</sup></div>
+  <div class="hud-label" id="tempState">Rooftop</div>
+  <div class="hud-track"><div class="hud-fill" id="tempFill"></div></div>
+</div>
+
+<!-- ============ ACT ONE — the descent begins ============ -->
+<section class="act1" id="act1">
+  <div class="act1-pin">
+    <!-- depth planes: far skyline, mid rooftop, near condensers -->
+    <!-- far: city dissolving in heat haze -->
+    <div class="plane" id="p1" style="opacity:.5">
+      <svg viewBox="0 0 2000 520" preserveAspectRatio="xMidYMax meet">
+        <g fill="rgba(255,196,128,.13)">
+          <rect x="40" y="250" width="104" height="270"/><rect x="168" y="186" width="82" height="334"/>
+          <rect x="272" y="300" width="126" height="220"/><rect x="424" y="132" width="94" height="388"/>
+          <rect x="546" y="242" width="110" height="278"/><rect x="682" y="176" width="76" height="344"/>
+          <rect x="784" y="286" width="138" height="234"/><rect x="948" y="150" width="98" height="370"/>
+          <rect x="1072" y="262" width="116" height="258"/><rect x="1214" y="200" width="86" height="320"/>
+          <rect x="1326" y="304" width="132" height="216"/><rect x="1484" y="140" width="102" height="380"/>
+          <rect x="1612" y="256" width="120" height="264"/><rect x="1758" y="192" width="88" height="328"/>
+          <rect x="1872" y="288" width="124" height="232"/>
+        </g>
+      </svg>
+    </div>
+    <!-- mid: parapet, water tanks, cable runs -->
+    <div class="plane" id="p2" style="opacity:.85">
+      <svg viewBox="0 0 2000 460" preserveAspectRatio="xMidYMax meet">
+        <g fill="rgba(28,12,4,.82)">
+          <rect x="0" y="330" width="2000" height="130"/>
+          <rect x="120" y="232" width="190" height="98" rx="5"/>
+          <rect x="470" y="256" width="150" height="74" rx="5"/>
+          <rect x="820" y="214" width="210" height="116" rx="5"/>
+          <rect x="1240" y="248" width="164" height="82" rx="5"/>
+          <rect x="1596" y="228" width="196" height="102" rx="5"/>
+        </g>
+        <g stroke="rgba(255,178,104,.30)" stroke-width="2" fill="none">
+          <path d="M120 232q95-46 190 0M820 214q105-52 210 0M1596 228q98-48 196 0"/>
+          <path d="M0 300q250 46 500 0t500 0 500 0 500 0"/>
+        </g>
+      </svg>
+    </div>
+    <!-- near: condenser banks, fins catching the last light -->
+    <div class="plane" id="p3">
+      <svg viewBox="0 0 2000 560" preserveAspectRatio="xMidYMax meet">
+        <g fill="rgba(12,5,2,.94)"><rect x="-40" y="392" width="2080" height="168"/></g>
+        <g fill="rgba(18,8,3,.96)" stroke="rgba(255,186,110,.34)" stroke-width="2.5">
+          <rect x="96" y="168" width="368" height="224" rx="8"/>
+          <rect x="812" y="126" width="404" height="266" rx="8"/>
+          <rect x="1560" y="182" width="352" height="210" rx="8"/>
+        </g>
+        <g stroke="rgba(255,186,110,.5)" stroke-width="3" fill="none">
+          <circle cx="280" cy="280" r="62"/><circle cx="1014" cy="259" r="74"/><circle cx="1736" cy="287" r="58"/>
+          <path d="M280 218v124M218 280h124" stroke-width="2" opacity=".55"/>
+          <path d="M1014 185v148M940 259h148" stroke-width="2" opacity=".55"/>
+          <path d="M1736 229v116M1678 287h116" stroke-width="2" opacity=".55"/>
+        </g>
+        <g stroke="rgba(255,170,90,.22)" stroke-width="1.6">
+          <path d="M120 196h320M120 214h320M120 232h320M120 328h320M120 346h320M120 364h320"/>
+          <path d="M838 152h352M838 172h352M838 192h352M838 326h352M838 346h352M838 366h352"/>
+          <path d="M1584 208h304M1584 226h304M1584 244h304M1584 330h304M1584 348h304M1584 366h304"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="pulse"></span>Delhi · 12 May · 45°C on the roof</div>
+      <h1>
+        <span class="h-line" id="l1"><span>Where Air Conditioning</span></span>
+        <span class="h-line" id="l2"><span>Is <em>Engineered</em>,</span></span>
+        <span class="h-line" id="l3"><span>Not Improvised</span></span>
+      </h1>
+      <p class="h-sub" id="hsub">Thirty-eight years of getting Delhi from unbearable to exact.
+        Scroll down and travel the same 23 degrees our engineers deliver every day.</p>
+    </div>
+
+    <div class="scroll-cue"><span>Begin the descent</span><div class="cue-rail"></div></div>
+  </div>
+</section>
+
+<!-- ============ ACT TWO — what failure costs ============ -->
+<section class="act2" id="act2">
+  <div class="act2-pin">
+    <div class="rail-head">
+      <span class="sec-label">The cost of improvised</span>
+      <h2>Four ways an AC<br>dies before its time</h2>
+    </div>
+    <div class="rail" id="rail">
+      <article class="fail">
+        <div class="fail-n mono">01 / SKIPPED STEP</div>
+        <h3>No vacuum evacuation</h3>
+        <p>Air and moisture left inside the refrigerant circuit form acids that corrode the compressor
+           from within. Invisible on day one. Fatal by year three. It is the most commonly skipped step
+           in a cheap installation, because no customer can see whether it was done.</p>
+        <div class="fail-cost mono">Costs you the compressor</div>
+      </article>
+      <article class="fail">
+        <div class="fail-n mono">02 / SKIPPED STEP</div>
+        <h3>Gas topped up, leak ignored</h3>
+        <p>Refrigerant sits in a sealed loop. It is not consumed, so if it is low, it leaked. Recharging
+           without finding the leak means paying for the same gas next summer, while the system runs
+           starved and the compressor takes the punishment.</p>
+        <div class="fail-cost mono">Costs you the same bill, twice</div>
+      </article>
+      <article class="fail">
+        <div class="fail-n mono">03 / SKIPPED STEP</div>
+        <h3>Drainage without fall</h3>
+        <p>A drain line run flat holds water instead of shedding it. It reads fine at handover and
+           reappears a year later as a stain spreading across your ceiling. Nearly every "AC leaking
+           water" call we attend is drainage that was never set correctly.</p>
+        <div class="fail-cost mono">Costs you the ceiling</div>
+      </article>
+      <article class="fail">
+        <div class="fail-n mono">04 / SKIPPED STEP</div>
+        <h3>Sized on floor area</h3>
+        <p>A chart says square feet. A west-facing top floor with full glazing says otherwise. Size on
+           the chart and the system runs flat out all afternoon and still loses, or it is oversized,
+           short-cycles, and leaves the room cold and clammy.</p>
+        <div class="fail-cost mono">Costs you every summer</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT THREE — the standard ============ -->
+<section class="act">
+  <div class="wrap">
+    <div class="act-head rev">
+      <span class="sec-label">The standard</span>
+      <h2>What we do instead</h2>
+      <p>None of this is exotic. It is the ordinary correct procedure, done every time, on every job,
+         including the ones nobody will ever inspect. That is the entire difference.</p>
+    </div>
+    <div class="stds">
+      <div class="std rev">
+        <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" style="--len:110"/>
+          <path d="M24 12v12l8 5" style="--len:30"/></svg>
+        <h3>Evacuated, then held</h3>
+        <p>We pull a deep vacuum and hold it, to prove the circuit is tight before a gram of refrigerant
+           goes in. The step that takes the extra hour is the step that buys the extra decade.</p>
+      </div>
+      <div class="std rev d1">
+        <svg viewBox="0 0 48 48"><path d="M8 30c6-14 26-14 32 0" style="--len:52"/>
+          <path d="M14 34h20" style="--len:22"/><circle cx="24" cy="18" r="4" style="--len:26"/></svg>
+        <h3>Charged by weight</h3>
+        <p>To the manufacturer's stated figure, adjusted for the actual pipe run. Not until the gauge
+           looks about right. Over and under both cost you capacity and compressor life.</p>
+      </div>
+      <div class="std rev d2">
+        <svg viewBox="0 0 48 48"><path d="M10 14h28v20H10z" style="--len:98"/>
+          <path d="M10 22h28" style="--len:29"/><path d="M18 34v6M30 34v6" style="--len:14"/></svg>
+        <h3>Sized on heat load</h3>
+        <p>Orientation, floor level, glazing, ceiling height, occupancy, equipment. We measure the room
+           you actually have, then specify. The survey is free and it is the part that matters most.</p>
+      </div>
+      <div class="std rev d3">
+        <svg viewBox="0 0 48 48"><path d="M24 6l15 8v12c0 9-6 14-15 17-9-3-15-8-15-17V14z" style="--len:105"/>
+          <path d="M17 24l5 5 10-10" style="--len:24"/></svg>
+        <h3>Documented, then warranted</h3>
+        <p>Commissioning readings recorded at handover, and a written report after every visit. It is
+           what makes a warranty claim straightforward and an audit uneventful.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ACT FOUR — the work ============ -->
+<section class="act">
+  <div class="wrap">
+    <div class="act-head rev">
+      <span class="sec-label">The work</span>
+      <h2>Four things, done properly</h2>
+    </div>
+    <div class="works">
+      <div class="work rev"><h3>AC Repair</h3>
+        <p>Not cooling, gas leaks, water, noise, tripping. We measure rather than guess, quote before
+           we start, and fix it once.</p>
+        <a href="ac-repair.html">Explore repair <span>→</span></a></div>
+      <div class="work rev d1"><h3>AC Servicing</h3>
+        <p>Deep cleaning, coil and condenser washing, drain clearing and a measured performance report.
+           Lower bills, fewer breakdowns.</p>
+        <a href="ac-servicing.html">Explore servicing <span>→</span></a></div>
+      <div class="work rev d2"><h3>AC Installation</h3>
+        <p>Split, cassette, ducted, central and VRF. Load-calculated, brazed, evacuated, charged by
+           weight and proven before handover.</p>
+        <a href="ac-installation.html">Explore installation <span>→</span></a></div>
+      <div class="work rev d3"><h3>AC AMC</h3>
+        <p>Scheduled preventive visits, priority response and documented reports. The programme our
+           embassy clients have kept for decades.</p>
+        <a href="ac-amc.html">Explore AMC <span>→</span></a></div>
+    </div>
+    <div class="nums">
+      <div class="rev"><div class="num-v"><span class="cnt" data-to="38">0</span><em>+</em></div><div class="num-l">Years unbroken</div></div>
+      <div class="rev d1"><div class="num-v"><span class="cnt" data-to="15">0</span><em>+</em></div><div class="num-l">Embassies served</div></div>
+      <div class="rev d2"><div class="num-v">2<em>hr</em></div><div class="num-l">Emergency response</div></div>
+      <div class="rev d3"><div class="num-v"><span class="cnt" data-to="0">0</span></div><div class="num-l">Safety incidents</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="proof">
+  <div class="proof-track" id="proofTrack"></div>
+</div>
+
+<!-- ============ FINAL ACT — 22°C ============ -->
+<section class="ask">
+  <div class="wrap">
+    <div class="ask-grid">
+      <div class="rev">
+        <span class="sec-label">22°C · Engineered</span>
+        <h2>You have arrived.<br>Now let us do it<br>in your building.</h2>
+        <p class="lede">Tell us what your AC is doing and a senior engineer calls you back within two
+          hours. No obligation, no script, and an honest answer even when it earns us less.</p>
+        <div class="direct">
+          <a href="tel:+919312264832"><span class="ic">📞</span>
+            <span><span class="k">Call directly</span><span class="v">+91 93122 64832</span></span></a>
+          <a href="https://wa.me/919312264832" target="_blank" rel="noopener"><span class="ic">💬</span>
+            <span><span class="k">WhatsApp</span><span class="v">Message us now</span></span></a>
+          <a href="mailto:ajay@aircontrols.in"><span class="ic">✉</span>
+            <span><span class="k">Email</span><span class="v">ajay@aircontrols.in</span></span></a>
+        </div>
+      </div>
+      <form class="rev d1" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="0b3287e6-ba3f-4a09-93ed-2212b40ea680">
+        <input type="hidden" name="subject" value="New Lead — Air Control 45→22 Experience">
+        <input type="hidden" name="from_name" value="aircontrols.in">
+        <h3>Get a free assessment</h3>
+        <p>We respond within two hours, seven days a week.</p>
+        <div class="row">
+          <div class="f"><label>Name *</label><input type="text" name="name" placeholder="Rajesh Sharma" required></div>
+          <div class="f"><label>Phone *</label><input type="tel" name="phone" placeholder="+91 98XXX XXXXX" required></div>
+        </div>
+        <div class="row">
+          <div class="f"><label>Locality *</label><input type="text" name="location" placeholder="Greater Kailash" required></div>
+          <div class="f"><label>Service *</label><select name="service" required>
+            <option value="">Select…</option>
+            <option>AC repair — not cooling</option><option>AC servicing</option>
+            <option>New installation</option><option>AMC contract</option>
+            <option>Emergency — urgent</option>
+          </select></div>
+        </div>
+        <div class="f" style="margin-bottom:6px"><label>What is happening?</label>
+          <textarea name="message" placeholder="Tell us what the AC is doing — the more detail, the better we can prepare."></textarea></div>
+        <button type="submit" class="submit">Request Free Assessment →</button>
+        <p class="fine">🔒 Your details stay with our engineers.</p>
+      </form>
+    </div>
+  </div>
+  <div class="wrap">
+    <footer>
+      <div class="foot">
+        <span>© 2025 Air Control · Ground Floor, 209, Sant Nagar, East of Kailash, New Delhi 110065</span>
+        <div class="foot-links">
+          <a href="index.html">Home</a><a href="ac-repair.html">Repair</a>
+          <a href="ac-amc.html">AMC</a><a href="ac-service-delhi.html">Delhi</a>
+          <a href="blog.html">Insights</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</section>
+
+<div class="mbar">
+  <a class="c" href="tel:+919312264832">📞 Call Now</a>
+  <a class="w" href="https://wa.me/919312264832" target="_blank" rel="noopener">💬 WhatsApp</a>
+</div>
+
+<script>
+//__JS__
+</script>
+</body>
+</html>
