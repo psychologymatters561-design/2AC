@@ -15,7 +15,6 @@ on:
       - "content_*.py"
       - "index.html"
       - "normalize_pages.py"
-      - "logo.png.b64"
       - ".github/workflows/build-pages.yml"
   workflow_dispatch:
 
@@ -31,29 +30,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Restore logo.png from base64
+      - name: Restore logo.png from git history
         run: |
           # logo.png is binary and cannot be written through the contents API,
-          # so it travels as base64 text and is decoded here. The checksum
-          # makes any corruption in transit fail the build instead of
-          # committing a broken image.
-          if [ -f logo.png.b64 ]; then
-            grep -v '^#' logo.png.b64 | tr -d '\n' | base64 -d > logo.png
-            want=$(grep '^# sha256' logo.png.b64 | awk '{print $3}')
-            got=$(sha256sum logo.png | awk '{print $1}')
-            if [ "$want" != "$got" ]; then
-              echo "logo.png checksum mismatch: expected $want, got $got"
-              exit 1
-            fi
-            echo "logo.png restored and verified ($(stat -c%s logo.png) bytes)"
-          else
-            echo "no logo.png.b64 present, skipping"
+          # but the original is still reachable in this repository's history.
+          # Restoring it from there keeps the full-resolution original rather
+          # than shipping a re-encoded copy, and the checksum makes a wrong
+          # blob fail the build.
+          if [ ! -f logo.png ]; then
+            git checkout ec4dddf8c59bf0ef13e14b168abdcacdba68fcee -- logo.png
           fi
+          want=65a41568815fef2abcbbb84a676226e87f54722bf2e0cdb24aaefa0b257b1c8e
+          got=$(sha256sum logo.png | awk '{print $1}')
+          if [ "$want" != "$got" ]; then
+            echo "logo.png checksum mismatch: expected $want, got $got"
+            exit 1
+          fi
+          echo "logo.png restored ($(stat -c%s logo.png) bytes)"
 
       - name: Generate pages
         run: python3 build_all.py
