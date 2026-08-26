@@ -12,7 +12,9 @@ on:
     paths:
       - "build.py"
       - "build_all.py"
+      - "build_experience.py"
       - "content_*.py"
+      - "src/experience.*"
       - "index.html"
       - "normalize_pages.py"
       - ".github/workflows/build-pages.yml"
@@ -60,6 +62,18 @@ jobs:
 
       - name: Normalise hand-written pages
         run: python3 normalize_pages.py
+
+      - name: Verify the scroll experience assembled intact
+        run: |
+          # experience.html is assembled from src/; a truncated or corrupted
+          # transfer would still produce a file, so check the hash.
+          want=b65fd96aad4975615fc937c2447dd0375215f2ba6596ca70030e4c3f9d3e0cab
+          got=$(sha256sum experience.html | awk '{print $1}')
+          if [ "$want" != "$got" ]; then
+            echo "experience.html checksum mismatch: expected $want, got $got"
+            exit 1
+          fi
+          echo "experience.html verified ($(stat -c%s experience.html) bytes)"
 
       - name: Verify output
         run: |
