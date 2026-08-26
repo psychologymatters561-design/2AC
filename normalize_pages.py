@@ -2,9 +2,10 @@
 """
 Normalise the hand-written pages (homepage, why-us, older blog posts).
 
-The generated pages get these properties from the templates in build.py and
-build_blog.py. The hand-written ones need them applied in place, so this
-script does it idempotently: running it twice changes nothing.
+The generated pages get these properties from the templates in build.py,
+build_blog.py and build_experience.py. The hand-written ones need them
+applied in place, so this script does it idempotently: running it twice
+changes nothing.
 
   - keyword-stuffed footer blocks removed
   - placeholder form key replaced with the real one
@@ -46,6 +47,7 @@ GENERATED = {
     "blog/ac-not-cooling.html", "blog/ac-gas-filling-cost-delhi.html",
     "blog/how-often-ac-service.html", "blog/best-ac-for-home.html",
     "blog/ac-amc-worth-it.html",
+    "experience.html",
 }
 
 
