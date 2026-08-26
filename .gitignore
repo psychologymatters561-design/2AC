@@ -6,3 +6,12 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# node / dev tooling
+package-lock.json
+shoot.cjs
+mob.cjs
+
+# python build artefacts
+__pycache__/
+*.pyc

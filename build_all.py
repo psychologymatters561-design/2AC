@@ -13,6 +13,7 @@ from content_ghaziabad import ghaziabad
 from content_blog_index import blog_index
 import content_blog_notcooling, content_blog_gas, content_blog_howoften
 import content_blog_bestac, content_blog_amcworth
+from build_experience import build as experience
 
 JOBS = [
     ("ac-repair.html",            ac_repair),
@@ -30,6 +31,7 @@ JOBS = [
     ("blog/how-often-ac-service.html",    content_blog_howoften.build),
     ("blog/best-ac-for-home.html",        content_blog_bestac.build),
     ("blog/ac-amc-worth-it.html",         content_blog_amcworth.build),
+    ("experience.html",                   experience),
 ]
 
 if __name__ == "__main__":
