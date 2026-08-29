@@ -21,12 +21,14 @@
     target = max>0 ? Math.min(1,Math.max(0,scrollY/max)) : 0;
   }
 
-  /* ---------- act one: pinned dolly + line-by-line assembly ---------- */
+  /* ---------- act one: the film scrubs, the headline assembles ---------- */
   var act1=document.getElementById('act1'),
-      p1=document.getElementById('p1'),p2=document.getElementById('p2'),p3=document.getElementById('p3'),
       lines=[document.getElementById('l1'),document.getElementById('l2'),document.getElementById('l3')],
       hsub=document.getElementById('hsub'),
-      heroCopy=document.querySelector('.hero-copy');
+      heroCopy=document.querySelector('.hero-copy'),
+      cue=document.querySelector('.scroll-cue'),
+      film=document.getElementById('film'),
+      fctx=film.getContext('2d');
 
   /* the headline assembles itself on arrival, line by line, then scroll
      takes over and carries it away. Waiting for scroll to show line one
@@ -38,28 +40,99 @@
   if(document.readyState==='complete') assemble();
   else addEventListener('load',assemble);
 
-  // base opacity per plane, so haze depth survives the scroll fade
-  var BASE=[.5,.85,1];
+  /* One photograph per scroll position. On a phone we take every second frame:
+     the same sequence for half the bytes, and the cross-fade below closes the gap. */
+  var TOTAL=28, STEP=innerWidth<=820?2:1,
+      SHOTS=[], READY=[], NWANT=0, loaded=0;
+
+  function loadFilm(){
+    var idx=[],i;
+    for(i=0;i<TOTAL;i+=STEP) idx.push(i);
+    if(idx[idx.length-1]!==TOTAL-1) idx.push(TOTAL-1);
+    NWANT=idx.length;
+    idx.forEach(function(n,slot){
+      var im=new Image();
+      im.decoding='async';
+      im.onload=function(){
+        READY[slot]=true;
+        if(!loaded++) film.classList.add('ready');
+      };
+      im.src='media/roof-'+(n<10?'0':'')+n+'.webp';
+      SHOTS[slot]=im;
+    });
+  }
+  loadFilm();
+
+  function sizeFilm(){
+    var d=Math.min(devicePixelRatio||1,2);
+    film.width=Math.round(innerWidth*d);
+    film.height=Math.round(innerHeight*d);
+    lastKey='';
+  }
+
+  /* Drawn a little larger than the canvas, so the pointer has somewhere to
+     push the frame without ever exposing an edge. */
+  function drawShot(im,alpha,ox,oy){
+    var cw=film.width, ch=film.height;
+    var s=Math.max(cw/im.width, ch/im.height)*1.06;
+    var w=im.width*s, h=im.height*s;
+    fctx.globalAlpha=alpha;
+    fctx.drawImage(im,(cw-w)/2+ox,(ch-h)/2+oy,w,h);
+  }
+
+  // frames arrive out of order, so fall back to the closest one that has landed
+  function nearest(slot){
+    for(var d=0;d<NWANT;d++){
+      if(READY[slot-d]) return slot-d;
+      if(READY[slot+d]) return slot+d;
+    }
+    return -1;
+  }
+
+  var lastKey='';
+  function drawFilm(p){
+    if(!loaded) return;
+    var x=(reduce?0:p)*(NWANT-1), i=Math.floor(x), f=x-i;
+    var a=nearest(Math.min(NWANT-1,i)), b=nearest(Math.min(NWANT-1,i+1));
+    if(a<0) return;
+    var ox=reduce?0:varPx*22, oy=reduce?0:varPy*16;
+    var key=a+'|'+b+'|'+f.toFixed(2)+'|'+ox.toFixed(1)+'|'+oy.toFixed(1);
+    if(key===lastKey) return;          // nothing has moved; don't repaint
+    lastKey=key;
+    drawShot(SHOTS[a],1,ox,oy);
+    /* Cross-fade into the next frame so the stills read as continuous motion.
+       Only when we hold every frame: blending frames two apart moves the crop
+       far enough that the fade reads as a double exposure, not as movement. */
+    if(STEP===1 && b>=0 && b!==a && f>0.02) drawShot(SHOTS[b],f,ox,oy);
+    fctx.globalAlpha=1;
+  }
+
   function act1Frame(){
     var r=act1.getBoundingClientRect(), h=act1.offsetHeight-innerHeight;
     var p = h>0 ? Math.min(1,Math.max(0,-r.top/h)) : 0;
-    // each plane pushes toward the camera at its own rate — a dolly, not a slide
-    var pz=[[1.00,.30,.06],[1.10,.60,.13],[1.22,1.05,.24]], el=[p1,p2,p3];
-    for(var i=0;i<3;i++){
-      var s=pz[i][0]+p*pz[i][1];
-      var y=p*innerHeight*pz[i][2];
-      el[i].style.transform=
-        'translate3d(calc(-50% + '+(varPx*(i+1)*8).toFixed(1)+'px),'+
-        (y+varPy*(i+1)*6).toFixed(1)+'px,0) scale('+s.toFixed(4)+')';
-      el[i].style.opacity=(BASE[i]*Math.max(0,1-p*1.15)).toFixed(3);
-    }
+    drawFilm(p);
     // the copy lifts away as the camera pushes past it
     heroCopy.style.transform=
       'translate3d('+(varPx*-9).toFixed(1)+'px,'+(varPy*-7 - p*130).toFixed(1)+'px,0)';
     heroCopy.style.opacity=Math.max(0,1-p*1.9).toFixed(3);
+    // the invitation to scroll has no business still being there once you have
+    if(cue) cue.style.opacity=Math.max(0,1-p*7).toFixed(3);
+  }
+
+  /* ---------- photographs drift against the scroll ---------- */
+  var pars=[].slice.call(document.querySelectorAll('[data-par]'));
+  function parFrame(){
+    for(var i=0;i<pars.length;i++){
+      var el=pars[i], r=el.getBoundingClientRect();
+      if(r.bottom<-100 || r.top>innerHeight+100) continue;
+      var c=(r.top+r.height/2-innerHeight/2)/innerHeight;   // -1 .. 1 across the viewport
+      var d=-c*parseFloat(el.getAttribute('data-par'))*r.height;
+      el.style.transform='translate3d(0,calc(-50% + '+d.toFixed(1)+'px),0)';
+    }
   }
 
   /* ---------- act two: pinned rail pans sideways ---------- */
+  var hudEl=document.querySelector('.hud'), hudDim=0;
   var act2=document.getElementById('act2'), rail=document.getElementById('rail');
   function act2Frame(){
     var r=act2.getBoundingClientRect(), h=act2.offsetHeight-innerHeight;
@@ -179,13 +252,21 @@
 
     act1Frame();
     act2Frame();
+    /* The rail pans its cards straight through the instrument's corner. Rather
+       than let the readout sit on top of the words, it steps back while the rail
+       is the subject and returns once the rail has passed. */
+    var r2=act2.getBoundingClientRect();
+    var want=(r2.top<innerHeight*0.35 && r2.bottom>innerHeight*0.65)?1:0;
+    hudDim += (want-hudDim)*0.08;
+    if(hudDim>0.002) hudEl.style.opacity=(1-0.74*hudDim).toFixed(3);
+    if(!reduce) parFrame();
     if(!reduce) drawSky(t);
 
     requestAnimationFrame(frame);
   }
 
-  sizeCanvas();
-  addEventListener('resize',sizeCanvas,{passive:true});
+  sizeCanvas(); sizeFilm();
+  addEventListener('resize',function(){ sizeCanvas(); sizeFilm(); },{passive:true});
   readScroll(); journey=target;
   requestAnimationFrame(frame);
 })();

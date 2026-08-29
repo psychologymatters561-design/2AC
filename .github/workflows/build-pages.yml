@@ -67,13 +67,31 @@ jobs:
         run: |
           # experience.html is assembled from src/; a truncated or corrupted
           # transfer would still produce a file, so check the hash.
-          want=b65fd96aad4975615fc937c2447dd0375215f2ba6596ca70030e4c3f9d3e0cab
+          want=74f43beee8ac5351b147f2e50cc9b37f1cc6eaf0b5751ae9667cf041103d8d9e
           got=$(sha256sum experience.html | awk '{print $1}')
           if [ "$want" != "$got" ]; then
             echo "experience.html checksum mismatch: expected $want, got $got"
             exit 1
           fi
           echo "experience.html verified ($(stat -c%s experience.html) bytes)"
+
+      - name: Verify the hero sequence is complete
+        run: |
+          # The hero is 28 frames drawn to a canvas. A missing or truncated frame
+          # would not break the page, it would just quietly stutter, so check the
+          # whole run here rather than find out from a visitor.
+          missing=0
+          for i in $(seq -w 0 27); do
+            f="media/roof-$i.webp"
+            if [ ! -f "$f" ]; then echo "missing $f"; missing=1; continue; fi
+            sz=$(stat -c%s "$f")
+            if [ "$sz" -lt 10000 ]; then echo "$f is only $sz bytes"; missing=1; fi
+          done
+          for f in media/diagnose.webp media/repair.webp media/install.webp media/arrive.webp; do
+            [ -f "$f" ] || { echo "missing $f"; missing=1; }
+          done
+          [ "$missing" -eq 0 ] || exit 1
+          echo "hero sequence complete: $(ls media/roof-*.webp | wc -l) frames, $(du -sh media | cut -f1) total"
 
       - name: Verify output
         run: |

@@ -18,6 +18,8 @@
 <meta name="twitter:image" content="https://aircontrols.in/logo.png">
 <meta name="theme-color" content="#0a1628">
 <link rel="icon" href="logo.svg">
+<!-- the first frame is the poster the hero paints before the sequence arrives -->
+<link rel="preload" as="image" href="media/roof-00.webp" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
@@ -89,60 +91,13 @@
 <!-- ============ ACT ONE — the descent begins ============ -->
 <section class="act1" id="act1">
   <div class="act1-pin">
-    <!-- depth planes: far skyline, mid rooftop, near condensers -->
-    <!-- far: city dissolving in heat haze -->
-    <div class="plane" id="p1" style="opacity:.5">
-      <svg viewBox="0 0 2000 520" preserveAspectRatio="xMidYMax meet">
-        <g fill="rgba(255,196,128,.13)">
-          <rect x="40" y="250" width="104" height="270"/><rect x="168" y="186" width="82" height="334"/>
-          <rect x="272" y="300" width="126" height="220"/><rect x="424" y="132" width="94" height="388"/>
-          <rect x="546" y="242" width="110" height="278"/><rect x="682" y="176" width="76" height="344"/>
-          <rect x="784" y="286" width="138" height="234"/><rect x="948" y="150" width="98" height="370"/>
-          <rect x="1072" y="262" width="116" height="258"/><rect x="1214" y="200" width="86" height="320"/>
-          <rect x="1326" y="304" width="132" height="216"/><rect x="1484" y="140" width="102" height="380"/>
-          <rect x="1612" y="256" width="120" height="264"/><rect x="1758" y="192" width="88" height="328"/>
-          <rect x="1872" y="288" width="124" height="232"/>
-        </g>
-      </svg>
-    </div>
-    <!-- mid: parapet, water tanks, cable runs -->
-    <div class="plane" id="p2" style="opacity:.85">
-      <svg viewBox="0 0 2000 460" preserveAspectRatio="xMidYMax meet">
-        <g fill="rgba(28,12,4,.82)">
-          <rect x="0" y="330" width="2000" height="130"/>
-          <rect x="120" y="232" width="190" height="98" rx="5"/>
-          <rect x="470" y="256" width="150" height="74" rx="5"/>
-          <rect x="820" y="214" width="210" height="116" rx="5"/>
-          <rect x="1240" y="248" width="164" height="82" rx="5"/>
-          <rect x="1596" y="228" width="196" height="102" rx="5"/>
-        </g>
-        <g stroke="rgba(255,178,104,.30)" stroke-width="2" fill="none">
-          <path d="M120 232q95-46 190 0M820 214q105-52 210 0M1596 228q98-48 196 0"/>
-          <path d="M0 300q250 46 500 0t500 0 500 0 500 0"/>
-        </g>
-      </svg>
-    </div>
-    <!-- near: condenser banks, fins catching the last light -->
-    <div class="plane" id="p3">
-      <svg viewBox="0 0 2000 560" preserveAspectRatio="xMidYMax meet">
-        <g fill="rgba(12,5,2,.94)"><rect x="-40" y="392" width="2080" height="168"/></g>
-        <g fill="rgba(18,8,3,.96)" stroke="rgba(255,186,110,.34)" stroke-width="2.5">
-          <rect x="96" y="168" width="368" height="224" rx="8"/>
-          <rect x="812" y="126" width="404" height="266" rx="8"/>
-          <rect x="1560" y="182" width="352" height="210" rx="8"/>
-        </g>
-        <g stroke="rgba(255,186,110,.5)" stroke-width="3" fill="none">
-          <circle cx="280" cy="280" r="62"/><circle cx="1014" cy="259" r="74"/><circle cx="1736" cy="287" r="58"/>
-          <path d="M280 218v124M218 280h124" stroke-width="2" opacity=".55"/>
-          <path d="M1014 185v148M940 259h148" stroke-width="2" opacity=".55"/>
-          <path d="M1736 229v116M1678 287h116" stroke-width="2" opacity=".55"/>
-        </g>
-        <g stroke="rgba(255,170,90,.22)" stroke-width="1.6">
-          <path d="M120 196h320M120 214h320M120 232h320M120 328h320M120 346h320M120 364h320"/>
-          <path d="M838 152h352M838 172h352M838 192h352M838 326h352M838 346h352M838 366h352"/>
-          <path d="M1584 208h304M1584 226h304M1584 244h304M1584 330h304M1584 348h304M1584 366h304"/>
-        </g>
-      </svg>
+    <!-- The rooftop, scrubbed frame by frame under the wheel. Every frame is a
+         tighter crop of one photograph, graded from the amber of 45°C toward the
+         steel blue of 22°C, so the footage travels the same distance the HUD reports. -->
+    <div class="film-wrap">
+      <canvas id="film" class="film" role="img"
+              aria-label="A rooftop condenser bank in Delhi, moving closer and cooling from midday heat to an engineered 22 degrees."></canvas>
+      <div class="film-scrim" aria-hidden="true"></div>
     </div>
 
     <div class="hero-copy">
@@ -204,6 +159,18 @@
   </div>
 </section>
 
+<!-- a held shot: the moment guessing stops -->
+<section class="shot rev" aria-labelledby="shot1cap">
+  <div class="shot-frame">
+    <img src="media/diagnose.webp" width="1280" height="800" loading="lazy" decoding="async"
+         data-par="0.14" alt="An engineer reading manifold gauges against an outdoor condenser unit.">
+  </div>
+  <div class="wrap"><p class="shot-cap" id="shot1cap">
+    <span class="sec-label">The difference</span>
+    Every diagnosis starts on the gauges. Pressure, superheat, subcooling — read, written down,
+    and shown to you. Nobody on this team is permitted to guess at a charge.</p></div>
+</section>
+
 <!-- ============ ACT THREE — the standard ============ -->
 <section class="act">
   <div class="wrap">
@@ -253,6 +220,12 @@
       <span class="sec-label">The work</span>
       <h2>Four things, done properly</h2>
     </div>
+    <div class="shot-pair rev">
+      <figure><img src="media/repair.webp" width="1120" height="840" loading="lazy" decoding="async"
+        data-par="0.10" alt="An engineer opening an outdoor unit to trace a fault."><figcaption>Diagnosed on site, quoted before work starts.</figcaption></figure>
+      <figure><img src="media/install.webp" width="1120" height="840" loading="lazy" decoding="async"
+        data-par="0.10" alt="An engineer fitting an outdoor unit during an installation."><figcaption>Brazed, evacuated, charged by weight, proven.</figcaption></figure>
+    </div>
     <div class="works">
       <div class="work rev"><h3>AC Repair</h3>
         <p>Not cooling, gas leaks, water, noise, tripping. We measure rather than guess, quote before
@@ -283,6 +256,18 @@
 <div class="proof">
   <div class="proof-track" id="proofTrack"></div>
 </div>
+
+<!-- the payoff: the room at the far end of the journey -->
+<section class="shot shot-wide rev" aria-labelledby="shot3cap">
+  <div class="shot-frame">
+    <img src="media/arrive.webp" width="1600" height="900" loading="lazy" decoding="async"
+         data-par="0.16" alt="A quiet, cool living room with a wall-mounted air conditioner running.">
+  </div>
+  <div class="wrap"><p class="shot-cap" id="shot3cap">
+    <span class="sec-label">22°C</span>
+    This is the whole job. A room nobody thinks about, holding its temperature quietly,
+    in a city that spent the afternoon at forty-five.</p></div>
+</section>
 
 <!-- ============ FINAL ACT — 22°C ============ -->
 <section class="ask">
